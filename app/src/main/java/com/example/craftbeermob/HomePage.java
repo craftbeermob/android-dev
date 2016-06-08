@@ -2,11 +2,15 @@ package com.example.craftbeermob;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,37 +21,35 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class HomePage extends AppCompatActivity implements IList {
+public class HomePage extends AppCompatActivity implements IList,IListFragmentInteractionListener {
 
     ListView misssions_ListView;
     MissionAdapter mAdapter;
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
-    String[] mPlanetTitles;
-    String mTitle;
+    String[] mDrawerStrings;
+    CharSequence mTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
         //region Drawer
-        mPlanetTitles = getResources().getStringArray(R.array.homePageNavStrings);
+        mDrawerStrings = getResources().getStringArray(R.array.homePageNavStrings);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.nav_homePage);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.homepagedrawerlistitem, mPlanetTitles));
+                R.layout.homepagedrawerlistitem, mDrawerStrings));
         // Set the list's click listener
-        // mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
+         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         //region toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_action_name);
         //endregion
-
 
         mTitle="Profile";
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -67,6 +69,12 @@ public class HomePage extends AppCompatActivity implements IList {
             }
         };
         //endregion
+
+
+
+
+
+
 
 
         //region /* setup tabs */
@@ -108,18 +116,21 @@ public class HomePage extends AppCompatActivity implements IList {
     public void setList(List<Object> objects) {
         if (mAdapter.getCount() > 0 && objects.size() > 0) {
             mAdapter.clear();
+            for (Object obj : objects) {
+                mAdapter.add((Missions) obj);
+            }
+            mAdapter.notifyDataSetChanged();
         }
-        for (Object obj : objects) {
-            mAdapter.add((Missions) obj);
-        }
-
-        mAdapter.notifyDataSetChanged();
-
     }
 
     @Override
     public List<Object> getList() {
         return null;
+    }
+
+    @Override
+    public void onListFragmentInteraction(Object item) {
+
     }
 
 
@@ -148,7 +159,6 @@ public class HomePage extends AppCompatActivity implements IList {
 
             }
 
-
             missionDescription = (TextView) row.findViewById(R.id.tv_missionrow_Description);
             missionTitle = (TextView) row.findViewById(R.id.tv_missionrow_Title);
             missionTitle.setText(currentItem.getTitle());
@@ -163,41 +173,61 @@ public class HomePage extends AppCompatActivity implements IList {
 
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        String mTitle;
+
 
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
             selectItem(position);
+
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater=getMenuInflater();
+       menuInflater.inflate(R.menu.activity_home,menu);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
      * Swaps fragments in the main content view
      */
     private void selectItem(int position) {
-        // Create a new fragment and specify the planet to show based on position
-//        Fragment fragment = new PlanetFragment();
-//        Bundle args = new Bundle();
-//        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-//        fragment.setArguments(args);
-//
-//        // Insert the fragment by replacing any existing fragment
-//        FragmentManager fragmentManager = getFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.content_frame, fragment)
-//                .commit();
-//
-//        // Highlight the selected item, update the title, and close the drawer
-//        mDrawerList.setItemChecked(position, true);
-//        setTitle(mPlanetTitles[position]);
-//        mDrawerLayout.closeDrawer(mDrawerList);
+
+        switch(position)
+        {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                LeaderboardFragment hello = new LeaderboardFragment();
+                fragmentTransaction.add(R.id.list, hello, "HELLO");
+                fragmentTransaction.commit();
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+
+        // Highlight the selected item, update the title, and close the drawer
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mDrawerStrings[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
-//
-//    @Override
-//    public void setTitle(CharSequence title) {
-//        mTitle = title;
-//        getActionBar().setTitle(mTitle);
-//    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
+    }
 
 
 }

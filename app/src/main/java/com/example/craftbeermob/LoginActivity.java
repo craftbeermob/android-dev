@@ -93,6 +93,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // attemptLogin();
                 //TODO: Replace later with actual login details
                 startActivity(new Intent(LoginActivity.this,HomePage.class));
+                finish();
 
             }
         });
