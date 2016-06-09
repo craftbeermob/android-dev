@@ -34,8 +34,8 @@ public class MyLeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<MyLea
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mUsernameView.setText(mValues.get(position).getUsername());
-        holder.mPointsView.setText(mValues.get(position).getPoints());
+        holder.mUsernameView.setText(holder.mItem.getUsername());
+        holder.mPointsView.setText(holder.mItem.getPoints().toString());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

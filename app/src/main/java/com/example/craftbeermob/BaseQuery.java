@@ -29,7 +29,6 @@ import com.squareup.okhttp.OkHttpClient;
  */
 
 
-
 public class BaseQuery<T> {
 
     Context context;
@@ -37,8 +36,6 @@ public class BaseQuery<T> {
      * Mobile Service Client reference
      */
     private MobileServiceClient mClient;
-
-
 
 
     /**
@@ -49,8 +46,7 @@ public class BaseQuery<T> {
 
     Class type;
 
-    BaseQuery(Context con,Class classType)
-    {
+    BaseQuery(Context con, Class classType) {
         // Mobile Service URL and key
         try {
 
@@ -68,41 +64,40 @@ public class BaseQuery<T> {
 
     /**
      * Add a new  mission item
-     *
-     * */
+     */
 
-    public  void addItem(final IObject item) {
+    public void addItem(final IObject item) {
         if (mClient == null) {
             return;
         }
 
 
-            AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-                @Override
-                protected Void doInBackground(Void... params) {
-                    try {
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
 
-                            mTable.insert(item.returnObj()).get();
+                    mTable.insert(item.returnObj()).get();
 
 
-                    } catch (final Exception e) {
-                       Log.d("drawerlayout",e.getMessage());
-                    }
-                    return null;
+                } catch (final Exception e) {
+                    Log.d("drawerlayout", e.getMessage());
                 }
-            };
+                return null;
+            }
+        };
 
         runAsyncTask(task);
     }
 
     public void getAll(final IList activity) {
 
-        AsyncTask<Void, Void, List<Object>> task = new AsyncTask<Void, Void, List<Object>>(){
+        AsyncTask<Void, Void, List<Object>> task = new AsyncTask<Void, Void, List<Object>>() {
             @Override
             protected List<Object> doInBackground(Void... params) {
-                final List<Object>  results;
+                final List<Object> results;
                 try {
-                  results = mTable.execute().get();
+                    results = mTable.execute().get();
 
 
                 } catch (Exception exception) {
@@ -115,7 +110,9 @@ public class BaseQuery<T> {
             @Override
             protected void onPostExecute(List<Object> objectList) {
                 super.onPostExecute(objectList);
-                activity.setList(objectList);
+                if (objectList.size() > 0 && objectList != null) {
+                    activity.setList(objectList);
+                }
 
             }
         };
@@ -127,6 +124,7 @@ public class BaseQuery<T> {
 
     /**
      * Run an ASync task on the corresponding executor
+     *
      * @param task
      * @return
      */
@@ -140,6 +138,7 @@ public class BaseQuery<T> {
 
     /**
      * Run an ASync task on the corresponding executor
+     *
      * @param task
      * @return
      */

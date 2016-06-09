@@ -1,9 +1,12 @@
 package com.example.craftbeermob;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -28,10 +31,14 @@ public class BaseActivity extends AppCompatActivity {
     CharSequence mTitle;
     Toolbar toolbar;
     ActionBarDrawerToggle actionBarDrawerToggle;
+    public FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        //Add the Very First i.e Squad Fragment to the Container
 
 
 
@@ -41,9 +48,9 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layoutResID) {
         //region Drawer
-        mDrawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.drawerlayout, null);
+        mDrawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_home_page, null);
         FrameLayout activityContainer = (FrameLayout) mDrawerLayout.findViewById(R.id.content_frame);
-        getLayoutInflater().inflate(layoutResID, activityContainer, true);
+        getLayoutInflater().inflate(layoutResID, activityContainer, false);
         mDrawerStrings = getResources().getStringArray(R.array.homePageNavStrings);
         mDrawerList = (ListView) mDrawerLayout.findViewById(R.id.nav_drawer);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -51,7 +58,7 @@ public class BaseActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         //region toolbar
-        toolbar = (Toolbar) mDrawerLayout.findViewById(R.id.toolbar);
+        toolbar = (Toolbar) mDrawerLayout.findViewById(R.id.toolBar);
         if (useToolbar()) {
             setSupportActionBar(toolbar);
             setTitle(getTitle());
@@ -83,6 +90,7 @@ public class BaseActivity extends AppCompatActivity {
         //endregion
 
         super.setContentView(mDrawerLayout);
+
 
 
     }
@@ -124,21 +132,14 @@ public class BaseActivity extends AppCompatActivity {
 
         switch (position) {
             case 0:
-//                // Create a new fragment and specify the planet to show based on position
-//                Fragment fragment = new ProfileFragment();
-//
-//
-//                // Insert the fragment by replacing any existing fragment
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.content_frame, fragment)
-//                        .commit();
 
                 break;
             case 1:
                 break;
             case 2:
-
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.content_frame, new LeaderboardFragment()).commit();
                 break;
             case 3:
                 break;
@@ -153,6 +154,7 @@ public class BaseActivity extends AppCompatActivity {
         setTitle(mDrawerStrings[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
+
 
 
     @Override
