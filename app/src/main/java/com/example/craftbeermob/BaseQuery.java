@@ -86,7 +86,7 @@ public class BaseQuery<T> {
 
 
                     } catch (final Exception e) {
-                       Log.d("test",e.getMessage());
+                       Log.d("drawerlayout",e.getMessage());
                     }
                     return null;
                 }

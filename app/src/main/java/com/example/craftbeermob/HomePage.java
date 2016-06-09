@@ -2,11 +2,14 @@ package com.example.craftbeermob;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,61 +24,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class HomePage extends AppCompatActivity implements IList,IListFragmentInteractionListener {
+public class HomePage extends BaseActivity implements IListFragmentInteractionListener, IList {
 
     ListView misssions_ListView;
-    MissionAdapter mAdapter;
-    DrawerLayout mDrawerLayout;
-    ListView mDrawerList;
-    String[] mDrawerStrings;
-    CharSequence mTitle;
+    private RecyclerView mRecyclerView;
+    private MissionsRecyclerAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-
-        //region Drawer
-        mDrawerStrings = getResources().getStringArray(R.array.homePageNavStrings);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.nav_homePage);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.homepagedrawerlistitem, mDrawerStrings));
-        // Set the list's click listener
-         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-        //region toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_action_name);
-        //endregion
-
-        mTitle="Profile";
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                toolbar,  /* nav drawer image to replace 'Up' caret */
-                R.string.app_name,  /* "open drawer" description for accessibility */
-                R.string.app_name  /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mTitle);
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-        //endregion
-
-
-
-
-
-
-
 
         //region /* setup tabs */
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
@@ -100,13 +60,14 @@ public class HomePage extends AppCompatActivity implements IList,IListFragmentIn
         //endregion
 
 
-        /* setup listview */
-        misssions_ListView = (ListView) findViewById(R.id.homepage_ListView_Missions);
-        mAdapter = new MissionAdapter(this, R.layout.missionrow);
-        BaseQuery db = new BaseQuery(this, Missions.class);
-        db.getAll(this);
-        misssions_ListView.setAdapter(mAdapter);
-        /* --------------------  */
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView_homepage);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //get all listitems which gets called back to setList
+        //params:context, table to query
+        BaseQuery query = new BaseQuery(this, Missions.class);
+        query.getAll(this);
+        mAdapter = new MissionsRecyclerAdapter(null);
+        mRecyclerView.setAdapter(mAdapter);
 
 
     }
@@ -114,18 +75,14 @@ public class HomePage extends AppCompatActivity implements IList,IListFragmentIn
 
     @Override
     public void setList(List<Object> objects) {
-        if (mAdapter.getCount() > 0 && objects.size() > 0) {
-            mAdapter.clear();
-            for (Object obj : objects) {
-                mAdapter.add((Missions) obj);
+        try {
+            if (objects.size() > 0) {
+                mAdapter.addItems(objects);
             }
-            mAdapter.notifyDataSetChanged();
-        }
-    }
 
-    @Override
-    public List<Object> getList() {
-        return null;
+        } catch (Exception ex) {
+
+        }
     }
 
     @Override
@@ -133,100 +90,19 @@ public class HomePage extends AppCompatActivity implements IList,IListFragmentIn
 
     }
 
-
-    /**
-     * Created by ret on 6/5/16.
-     */
-    public class MissionAdapter extends ArrayAdapter<Missions> {
-
-        Context mContext;
-
-        public MissionAdapter(Context context, int resource) {
-            super(context, resource);
-            mContext = context;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View row = convertView;
-            TextView missionTitle = null;
-            TextView missionDescription = null;
-            Missions currentItem = getItem(position);
-
-            if (row == null) {
-                LayoutInflater inflater = ((AppCompatActivity) mContext).getLayoutInflater();
-                row = inflater.inflate(R.layout.missionrow, null);
-
-            }
-
-            missionDescription = (TextView) row.findViewById(R.id.tv_missionrow_Description);
-            missionTitle = (TextView) row.findViewById(R.id.tv_missionrow_Title);
-            missionTitle.setText(currentItem.getTitle());
-            missionDescription.setText(currentItem.getDescription());
-
-            row.setTag(currentItem.getId());
-
-
-            return row;
-        }
+    @Override
+    public List<Object> getList() {
+        return null;
     }
 
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
-
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
-
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuInflater menuInflater=getMenuInflater();
-       menuInflater.inflate(R.menu.activity_home,menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_home, menu);
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Swaps fragments in the main content view
-     */
-    private void selectItem(int position) {
-
-        switch(position)
-        {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                LeaderboardFragment hello = new LeaderboardFragment();
-                fragmentTransaction.add(R.id.list, hello, "HELLO");
-                fragmentTransaction.commit();
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-        }
-
-        // Highlight the selected item, update the title, and close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mDrawerStrings[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getActionBar().setTitle(mTitle);
     }
 
 
