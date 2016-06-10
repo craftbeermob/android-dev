@@ -23,10 +23,7 @@ import java.util.List;
  */
 public class LeaderboardFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 3;
+
     private IListFragmentInteractionListener mListener;
 
 
@@ -37,23 +34,11 @@ public class LeaderboardFragment extends Fragment {
     public LeaderboardFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static LeaderboardFragment newInstance(int columnCount) {
-        LeaderboardFragment fragment = new LeaderboardFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -65,19 +50,41 @@ public class LeaderboardFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-          Leaderboard leaderboard = new Leaderboard();
+
+            Leaderboard leaderboard = new Leaderboard();
             leaderboard.setBadges("None");
             leaderboard.setPoints(50);
             leaderboard.setUsername("Ret");
 
-            ArrayList<Leaderboard> leaderboardList= new ArrayList<>();
+            Leaderboard leaderboard2 = new Leaderboard();
+            leaderboard2.setBadges("None");
+            leaderboard2.setPoints(100);
+            leaderboard2.setUsername("Sylvain");
+
+            Leaderboard leaderboard3 = new Leaderboard();
+            leaderboard3.setBadges("None");
+            leaderboard3.setPoints(150);
+            leaderboard3.setUsername("Jace");
+
+            Leaderboard leaderboard4 = new Leaderboard();
+            leaderboard4.setBadges("None");
+            leaderboard4.setPoints(200);
+            leaderboard4.setUsername("Rob");
+
+            Leaderboard leaderboard5 = new Leaderboard();
+            leaderboard5.setBadges("None");
+            leaderboard5.setPoints(250);
+            leaderboard5.setUsername("Ron");
+
+            ArrayList<Leaderboard> leaderboardList = new ArrayList<>();
+
             leaderboardList.add(leaderboard);
+            leaderboardList.add(leaderboard2);
+            leaderboardList.add(leaderboard3);
+            leaderboardList.add(leaderboard4);
+            leaderboardList.add(leaderboard5);
 
             recyclerView.setAdapter(new MyLeaderboardRecyclerViewAdapter(leaderboardList, mListener));
         }
@@ -101,8 +108,6 @@ public class LeaderboardFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-
 
 
 }

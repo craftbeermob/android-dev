@@ -35,18 +35,18 @@ public class MyLeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<MyLea
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mUsernameView.setText(holder.mItem.getUsername());
-        holder.mPointsView.setText(holder.mItem.getPoints().toString());
+        holder.mPointsView.setText(Integer.toString(holder.mItem.getPoints()));
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
+//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (null != mListener) {
+//                    // Notify the active callbacks interface (the activity, if the
+//                    // fragment is attached to one) that an item has been selected.
+//                    mListener.onListFragmentInteraction(holder.mItem);
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -67,9 +67,6 @@ public class MyLeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<MyLea
             mPointsView = (TextView) view.findViewById(R.id.tv_leaderboard_points);
         }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mPointsView.getText() + "'";
-        }
+
     }
 }

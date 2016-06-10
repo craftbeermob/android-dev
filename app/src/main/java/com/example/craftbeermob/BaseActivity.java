@@ -1,17 +1,12 @@
 package com.example.craftbeermob;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,7 +34,6 @@ public class BaseActivity extends AppCompatActivity {
 
 
         //Add the Very First i.e Squad Fragment to the Container
-
 
 
     }
@@ -92,9 +86,7 @@ public class BaseActivity extends AppCompatActivity {
         super.setContentView(mDrawerLayout);
 
 
-
     }
-
 
 
     @Override
@@ -129,16 +121,19 @@ public class BaseActivity extends AppCompatActivity {
      * Swaps fragments in the main content view
      */
     private void selectItem(int position) {
-
+        FragmentManager manager;
+        FragmentTransaction transaction;
         switch (position) {
             case 0:
-
+                manager = getSupportFragmentManager();
+                transaction = manager.beginTransaction();
+                transaction.replace(R.id.content_frame, new HomePageFragment()).commit();
                 break;
             case 1:
                 break;
             case 2:
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
+                manager = getSupportFragmentManager();
+                transaction = manager.beginTransaction();
                 transaction.replace(R.id.content_frame, new LeaderboardFragment()).commit();
                 break;
             case 3:
@@ -154,7 +149,6 @@ public class BaseActivity extends AppCompatActivity {
         setTitle(mDrawerStrings[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
-
 
 
     @Override
