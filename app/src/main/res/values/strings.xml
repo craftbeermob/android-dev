@@ -38,5 +38,7 @@
         <item>Settings</item>
         <item>Logout</item>
     </string-array>
+    <string name="title_activity_hideouts_map">Map</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

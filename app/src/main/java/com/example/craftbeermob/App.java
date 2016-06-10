@@ -17,6 +17,7 @@ public class App extends Application {
     public void setBeerPhoto(Bitmap beerPhoto) {
         if(beerPhoto!=null)
         {
+            //release bitmap resources
             beerPhoto.recycle();
             this.beerPhoto = beerPhoto;
         }

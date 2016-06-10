@@ -1,5 +1,6 @@
 package com.example.craftbeermob;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -33,9 +34,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        //Add the Very First i.e Squad Fragment to the Container
-
-
     }
 
 
@@ -49,6 +47,7 @@ public class BaseActivity extends AppCompatActivity {
         mDrawerList = (ListView) mDrawerLayout.findViewById(R.id.nav_drawer);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.homepagedrawerlistitem, mDrawerStrings));
+
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         //region toolbar
@@ -130,6 +129,7 @@ public class BaseActivity extends AppCompatActivity {
                 transaction.replace(R.id.content_frame, new HomePageFragment()).commit();
                 break;
             case 1:
+               startActivity(new Intent(this,HideoutMapsActivity.class));
                 break;
             case 2:
                 manager = getSupportFragmentManager();
@@ -141,6 +141,10 @@ public class BaseActivity extends AppCompatActivity {
             case 4:
                 break;
             case 5:
+                break;
+
+            default:
+               // Log.d("Switch case error", "error");
                 break;
         }
 
