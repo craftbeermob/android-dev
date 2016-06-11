@@ -10,9 +10,15 @@ public class App extends Application {
     //global class which holds objects through the lifecycle of the application
     private Bitmap beerPhoto;
 
+
+
+
+
     public Bitmap getBeerPhoto() {
         return beerPhoto;
     }
+
+
 
     public void setBeerPhoto(Bitmap beerPhoto) {
         if(beerPhoto!=null)
@@ -23,4 +29,6 @@ public class App extends Application {
         }
 
     }
+
+
 }

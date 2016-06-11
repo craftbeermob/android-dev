@@ -69,6 +69,7 @@ public class HomePageFragment extends Fragment implements IList {
         return view;
     }
 
+    //callback to set the reyclerview
     @Override
     public void setList(List<Object> objects) {
         try {

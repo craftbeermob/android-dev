@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -56,11 +55,12 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
 
 
         if (item.getItemId() == R.id.menu_uploadbeer) {
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-           // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-            //cameraIntent.putExtra("return-data", true);
-           // cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
-            startActivityForResult(cameraIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+            startActivity(new Intent(HomePage.this,Geo.class));
+//            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//           // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+//            //cameraIntent.putExtra("return-data", true);
+//           // cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
+//            startActivityForResult(cameraIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
         return super.onOptionsItemSelected(item);
 
