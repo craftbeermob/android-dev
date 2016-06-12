@@ -21,6 +21,7 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     public static final int MEDIA_TYPE_IMAGE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +31,10 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, homePageFragment, null);
         fragmentTransaction.commit();
+
+
+
+
 
     }
 
@@ -55,7 +60,7 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
 
 
         if (item.getItemId() == R.id.menu_uploadbeer) {
-            startActivity(new Intent(HomePage.this,Geo.class));
+            startActivity(new Intent(HomePage.this, Geo.class));
 //            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //           // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
 //            //cameraIntent.putExtra("return-data", true);
@@ -68,15 +73,17 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
     }
 
 
-
-
-    /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(int type){
+    /**
+     * Create a file Uri for saving an image or video
+     */
+    private static Uri getOutputMediaFileUri(int type) {
         return Uri.fromFile(getOutputMediaFile(type));
     }
 
-    /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(int type){
+    /**
+     * Create a File for saving an image or video
+     */
+    private static File getOutputMediaFile(int type) {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
@@ -86,8 +93,8 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 Log.d("MyCameraApp", "failed to create directory");
                 return null;
             }
@@ -96,9 +103,9 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
+        if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
+                    "IMG_" + timeStamp + ".jpg");
         } else {
             return null;
         }
@@ -107,21 +114,21 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
     }
 
 
-    private void makeSnack(String textToShow)
-    {
+    private void makeSnack(String textToShow) {
 
-        Snackbar.make(getWindow().getDecorView().getRootView(),textToShow,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getWindow().getDecorView().getRootView(), textToShow, Snackbar.LENGTH_SHORT).show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bitmap photo;
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                if( (photo = (Bitmap) data.getExtras().get("data"))!=null)
-                // Image captured and saved to fileUri specified in the Intent
-              makeSnack("Image saved to:\n" +
-                      data.getData());
-                App  app  = new App();
+                if ((photo = (Bitmap) data.getExtras().get("data")) != null)
+                    // Image captured and saved to fileUri specified in the Intent
+                    makeSnack("Image saved to:\n" +
+                            data.getData());
+                App app = new App();
                 app.setBeerPhoto(photo);
 
 

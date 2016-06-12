@@ -1,28 +1,15 @@
 package com.example.craftbeermob;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
-import android.widget.ListView;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-
-import java.io.Console;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import com.microsoft.windowsazure.mobileservices.MobileServiceException;
-import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
-import com.squareup.okhttp.OkHttpClient;
+
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 /**
  * Created by ret on 6/3/16.
@@ -44,8 +31,7 @@ public class BaseQuery<T> {
     private MobileServiceTable<Object> mTable;
 
 
-    Class type;
-
+    //params:context, and the class type we are going to query for
     BaseQuery(Context con, Class classType) {
         // Mobile Service URL and key
         try {
@@ -81,7 +67,7 @@ public class BaseQuery<T> {
 
 
                 } catch (final Exception e) {
-                    Log.d("drawerlayout", e.getMessage());
+                    Log.d("Ex_addItem", e.getMessage());
                 }
                 return null;
             }
@@ -90,12 +76,13 @@ public class BaseQuery<T> {
         runAsyncTask(task);
     }
 
+
     public void getAll(final IList activity) {
 
-        AsyncTask<Void, Void, List<Object>> task = new AsyncTask<Void, Void, List<Object>>() {
+        AsyncTask<Void, Void, ArrayList<Object>> task = new AsyncTask<Void, Void, ArrayList<Object>>() {
             @Override
-            protected List<Object> doInBackground(Void... params) {
-                final List<Object> results;
+            protected ArrayList<Object> doInBackground(Void... params) {
+                final ArrayList<Object> results;
                 try {
                     results = mTable.execute().get();
 
@@ -108,7 +95,7 @@ public class BaseQuery<T> {
             }
 
             @Override
-            protected void onPostExecute(List<Object> objectList) {
+            protected void onPostExecute(ArrayList<Object> objectList) {
                 super.onPostExecute(objectList);
                 if (objectList.size() > 0 && objectList != null) {
                     activity.setList(objectList);
@@ -142,7 +129,7 @@ public class BaseQuery<T> {
      * @param task
      * @return
      */
-    private AsyncTask<Void, Void, List<Object>> runAsyncTaskAllObjects(AsyncTask<Void, Void, List<Object>> task) {
+    private AsyncTask<Void, Void, ArrayList<Object>> runAsyncTaskAllObjects(AsyncTask<Void, Void, ArrayList<Object>> task) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             return task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {

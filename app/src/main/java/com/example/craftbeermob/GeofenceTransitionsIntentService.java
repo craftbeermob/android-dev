@@ -23,9 +23,9 @@ public class GeofenceTransitionsIntentService extends IntentService {
         super(name);
     }
 
-     GeofenceTransitionsIntentService()
+     public GeofenceTransitionsIntentService()
     {
-        super("ServiceName");
+        super("GeofenceTransitionsIntentService");
 
     }
 
