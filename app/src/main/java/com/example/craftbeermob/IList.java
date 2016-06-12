@@ -1,7 +1,5 @@
 package com.example.craftbeermob;
 
-import android.app.Activity;
-
 import java.util.List;
 
 /**
@@ -11,5 +9,5 @@ public interface IList {
 
 
     public void setList(List<Object> objects);
-    public List<Object> getList();
+
 }

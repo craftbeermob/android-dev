@@ -133,8 +133,5 @@ public class HideoutMapsActivity extends AppCompatActivity implements OnMapReady
         mapFragment.getMapAsync(this);
     }
 
-    @Override
-    public List<Object> getList() {
-        return null;
-    }
+
 }

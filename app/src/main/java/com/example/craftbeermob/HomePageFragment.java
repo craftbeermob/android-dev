@@ -82,8 +82,4 @@ public class HomePageFragment extends Fragment implements IList {
         }
     }
 
-    @Override
-    public List<Object> getList() {
-        return null;
-    }
 }

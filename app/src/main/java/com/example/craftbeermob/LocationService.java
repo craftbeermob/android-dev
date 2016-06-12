@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -31,9 +32,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onCreate() {
         super.onCreate();
+
         buildGoogleApiClient();
-        if(mGoogleApiClient!=null)
-        {
+        if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
     }
@@ -66,23 +67,22 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+       LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-        getGoogleApiClient();
-
+        startLocationUpdates();
+        callbackClient.ClientConnected(mGoogleApiClient);
     }
 
     public void setCallBack(ILocationAware locationAware) {
         this.callbackClient = locationAware;
     }
 
-    void getGoogleApiClient() {
-        callbackClient.ClientConnected(mGoogleApiClient);
-        if(mGoogleApiClient!=null) {
+    void startLocationUpdates() {
+        if (mGoogleApiClient != null) {
             mLocationRequest = new LocationRequest();
             mLocationRequest.setInterval(1);
             mLocationRequest.setFastestInterval(1);
@@ -95,10 +95,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d("Googleconnectionfailed", Integer.toString(i));
     }
 
-    PreferenceManager.OnActivityStopListener onActivityStopListener= new PreferenceManager.OnActivityStopListener() {
+    PreferenceManager.OnActivityStopListener onActivityStopListener = new PreferenceManager.OnActivityStopListener() {
         @Override
         public void onActivityStop() {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, LocationService.this);
@@ -107,11 +107,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-       callbackClient.CurrentLocation(new LatLng(location.getLatitude(),location.getLongitude()));
+        callbackClient.CurrentLocation(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.d("Googleconnectionfailed", connectionResult.toString());
     }
 }
