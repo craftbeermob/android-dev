@@ -1,9 +1,9 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Interfaces;
 
 /**
  * Created by ret on 6/4/16.
  */
 public interface IObject<T> {
 
-    public Object returnObj();
+    Object returnObj();
 }

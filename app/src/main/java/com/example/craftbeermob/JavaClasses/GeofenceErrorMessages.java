@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.craftbeermob;
+package com.example.craftbeermob.JavaClasses;
 
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.example.craftbeermob.R;
 import com.google.android.gms.location.GeofenceStatusCodes;
 
 /**

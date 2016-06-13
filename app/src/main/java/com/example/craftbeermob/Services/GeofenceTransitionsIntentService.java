@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.craftbeermob;
+package com.example.craftbeermob.Services;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -31,6 +31,10 @@ import android.support.v4.os.ResultReceiver;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.craftbeermob.JavaClasses.Constants;
+import com.example.craftbeermob.JavaClasses.GeofenceErrorMessages;
+import com.example.craftbeermob.LocationClasses.GeoMain;
+import com.example.craftbeermob.R;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
@@ -46,8 +50,8 @@ import java.util.List;
  */
 public class GeofenceTransitionsIntentService extends IntentService {
 
-    ResultReceiver resultant;
     protected static final String TAG = "GeofenceTransitionsIS";
+    ResultReceiver resultant;
 
     /**
      * This constructor is required, and calls the super IntentService(String)
@@ -98,7 +102,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                     triggeringGeofences
             );
             Bundle bundle = new Bundle();
-            bundle.putBoolean(geofenceTransitionDetails, true);
+            bundle.putString("HideoutID", geofenceTransitionDetails);
 
             LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.TransitionEntered));
             // Send notification and log the transition details.
@@ -135,7 +139,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
         String triggeringGeofencesIdsString = TextUtils.join(", ", triggeringGeofencesIdsList);
 
-        return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
+        // return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
+        return triggeringGeofencesIdsString;
     }
 
     /**
@@ -163,11 +168,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         // Define the notification settings.
-        builder.setSmallIcon(R.drawable.cast_ic_notification_0)
+        builder.setSmallIcon(R.drawable.beer)
                 // In a real app, you may want to use a library like Volley
                 // to decode the Bitmap.
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                        R.drawable.cast_ic_notification_0))
+                        R.drawable.beer))
                 .setColor(Color.RED)
                 .setContentTitle(notificationDetails)
                 .setContentText(getString(R.string.geofence_transition_notification_text))

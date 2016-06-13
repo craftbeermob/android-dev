@@ -1,4 +1,4 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

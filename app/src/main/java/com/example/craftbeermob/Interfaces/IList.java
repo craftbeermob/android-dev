@@ -1,4 +1,4 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Interfaces;
 
 import java.util.List;
 
@@ -8,6 +8,6 @@ import java.util.List;
 public interface IList {
 
 
-    public void setList(List<Object> objects);
+    void setList(List<Object> objects);
 
 }

@@ -1,4 +1,4 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,64 +14,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.craftbeermob.Fragments.HomePageFragment;
+import com.example.craftbeermob.Interfaces.IListFragmentInteractionListener;
+import com.example.craftbeermob.LocationClasses.GeoMain;
+import com.example.craftbeermob.R;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class HomePage extends BaseActivity implements IListFragmentInteractionListener {
 
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     public static final int MEDIA_TYPE_IMAGE = 1;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
-
-        Fragment homePageFragment = new HomePageFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, homePageFragment, null);
-        fragmentTransaction.commit();
-
-
-
-
-
-    }
-
-
-    @Override
-    public void onListFragmentInteraction(Object item) {
-
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.activity_home, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Uri fileURI;
-
-
-        if (item.getItemId() == R.id.menu_uploadbeer) {
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-           // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-            //cameraIntent.putExtra("return-data", true);
-           // cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
-            startActivityForResult(cameraIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-        }
-        return super.onOptionsItemSelected(item);
-
-
-    }
-
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
     /**
      * Create a file Uri for saving an image or video
@@ -113,6 +68,52 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
         return mediaFile;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home_page);
+
+        Fragment homePageFragment = new HomePageFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, homePageFragment, null);
+        fragmentTransaction.commit();
+
+
+
+
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(Object item) {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_home, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Uri fileURI;
+
+
+        if (item.getItemId() == R.id.menu_uploadbeer) {
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+           // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+            //cameraIntent.putExtra("return-data", true);
+           // cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
+            startActivityForResult(cameraIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        }
+        return super.onOptionsItemSelected(item);
+
+
+    }
 
     private void makeSnack(String textToShow) {
 

@@ -1,4 +1,4 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
+
+import com.example.craftbeermob.Interfaces.IList;
+import com.example.craftbeermob.JavaClasses.BaseQuery;
+import com.example.craftbeermob.JavaClasses.MissionsRecyclerAdapter;
+import com.example.craftbeermob.Models.Missions;
+import com.example.craftbeermob.R;
 
 import java.util.List;
 
@@ -62,7 +68,7 @@ public class HomePageFragment extends Fragment implements IList {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         //get all listitems which gets called back to setList
         //params:context, table to query
-        new BaseQuery(getContext(), Missions.class).getAll(this);;
+        new BaseQuery(getContext(), Missions.class).getAll(this);
         mAdapter = new MissionsRecyclerAdapter(null);
         mRecyclerView.setAdapter(mAdapter);
         return view;

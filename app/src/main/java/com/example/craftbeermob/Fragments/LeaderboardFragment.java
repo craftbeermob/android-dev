@@ -1,18 +1,20 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.craftbeermob.Interfaces.IListFragmentInteractionListener;
+import com.example.craftbeermob.JavaClasses.MyLeaderboardRecyclerViewAdapter;
+import com.example.craftbeermob.Models.Leaderboard;
+import com.example.craftbeermob.R;
+
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**

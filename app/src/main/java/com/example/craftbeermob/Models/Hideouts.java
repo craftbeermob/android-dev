@@ -1,4 +1,6 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Models;
+
+import com.example.craftbeermob.Interfaces.IObject;
 
 /**
  * Created by ret70 on 6/11/2016.

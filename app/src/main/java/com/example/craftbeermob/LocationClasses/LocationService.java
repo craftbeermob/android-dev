@@ -1,4 +1,4 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.LocationClasses;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.craftbeermob.Interfaces.ILocationAware;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -20,9 +21,9 @@ import com.google.android.gms.maps.model.LatLng;
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
-    private GoogleApiClient mGoogleApiClient;
     ILocationAware callbackClient;
     LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
 
 
     public LocationService() {
@@ -46,18 +47,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         return mBinder;
     }
 
-
-    /**
-     * Class used for the client Binder.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with IPC.
-     */
-    public class LocalBinder extends Binder {
-        LocationService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return LocationService.this;
-        }
-    }
-
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -73,8 +62,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
     }
-
-
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -104,8 +91,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Log.d("Googleconnectionfailed", Integer.toString(i));
     }
 
-
-
     @Override
     public void onLocationChanged(Location location) {
         callbackClient.CurrentLocation(new LatLng(location.getLatitude(), location.getLongitude()));
@@ -114,5 +99,16 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d("Googleconnectionfailed", connectionResult.toString());
+    }
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+    public class LocalBinder extends Binder {
+        LocationService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return LocationService.this;
+        }
     }
 }

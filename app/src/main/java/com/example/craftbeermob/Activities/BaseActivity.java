@@ -1,4 +1,4 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,19 +15,24 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.example.craftbeermob.Fragments.HomePageFragment;
+import com.example.craftbeermob.Fragments.LeaderboardFragment;
+import com.example.craftbeermob.LocationClasses.HideoutMapsActivity;
+import com.example.craftbeermob.R;
+
 /**
  * Created by ret70 on 6/9/2016.
  */
 public class BaseActivity extends AppCompatActivity {
 
 
+    public FrameLayout frameLayout;
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
     String[] mDrawerStrings;
     CharSequence mTitle;
     Toolbar toolbar;
     ActionBarDrawerToggle actionBarDrawerToggle;
-    public FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,18 +109,6 @@ public class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
-
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
-
-        }
-    }
-
-
     /**
      * Swaps fragments in the main content view
      */
@@ -129,7 +122,7 @@ public class BaseActivity extends AppCompatActivity {
                 transaction.replace(R.id.content_frame, new HomePageFragment()).commit();
                 break;
             case 1:
-               startActivity(new Intent(this,HideoutMapsActivity.class));
+                startActivity(new Intent(this, HideoutMapsActivity.class));
                 break;
             case 2:
                 manager = getSupportFragmentManager();
@@ -137,7 +130,7 @@ public class BaseActivity extends AppCompatActivity {
                 transaction.replace(R.id.content_frame, new LeaderboardFragment()).commit();
                 break;
             case 3:
-                startActivity(new Intent(this,SettingsActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case 4:
                 break;
@@ -145,7 +138,7 @@ public class BaseActivity extends AppCompatActivity {
                 break;
 
             default:
-               // Log.d("Switch case error", "error");
+                // Log.d("Switch case error", "error");
                 break;
         }
 
@@ -155,11 +148,20 @@ public class BaseActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
-
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
         getSupportActionBar().setTitle(mTitle);
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            selectItem(position);
+
+        }
     }
 
 }

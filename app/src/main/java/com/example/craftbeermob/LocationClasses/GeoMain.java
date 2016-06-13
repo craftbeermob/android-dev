@@ -1,4 +1,4 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.LocationClasses;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -16,6 +16,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.craftbeermob.Interfaces.IList;
+import com.example.craftbeermob.Interfaces.ILocationAware;
+import com.example.craftbeermob.JavaClasses.BaseQuery;
+import com.example.craftbeermob.JavaClasses.Constants;
+import com.example.craftbeermob.JavaClasses.GeofenceErrorMessages;
+import com.example.craftbeermob.Models.Hideouts;
+import com.example.craftbeermob.R;
+import com.example.craftbeermob.Services.GeofenceTransitionsIntentService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -24,6 +32,8 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,25 +46,20 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         GoogleApiClient.OnConnectionFailedListener {
 
 
-    public static int GeoMain_RequestCode = 101;
-    boolean mBound;
-    LocationService mService;
-
-
-    private ArrayList<Object> HideoutObjects;
-    public ProgressDialog mProgressDialog;
     protected static final String TAG = "GeoMain";
-
+    public static int GeoMain_RequestCode = 101;
+    public ProgressDialog mProgressDialog;
     /**
      * Provides the entry point to Google Play services.
      */
     protected GoogleApiClient mGoogleApiClient;
-
     /**
      * The list of geofences used in this sample.
      */
     protected ArrayList<Geofence> mGeofenceList;
-
+    boolean mBound;
+    LocationService mService;
+    private ArrayList<Object> HideoutObjects;
     /**
      * Used to keep track of whether geofences were added.
      */
@@ -64,6 +69,26 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
      * Used when requesting to add or remove geofences.
      */
     private PendingIntent mGeofencePendingIntent;
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        // Called when the connection with the service is established
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // Because we have bound to an explicit
+            // service that is running in our own process, we can
+            // cast its IBinder to a concrete class and directly access it.
+            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            mService.setCallBack(GeoMain.this);
+
+        }
+
+        // Called when the connection with the service disconnects unexpectedly
+        public void onServiceDisconnected(ComponentName className) {
+            Log.e("Ex_Binding", "onServiceDisconnected");
+            mBound = false;
+        }
+    };
 
     public GeoMain() {
 
@@ -87,37 +112,32 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         mGeofencePendingIntent = null;
 
         Intent intent = new Intent(this, LocationService.class);
-        bindService(intent, mConnection, this.BIND_AUTO_CREATE);
+        bindService(intent, mConnection, BIND_AUTO_CREATE);
 
 
         new BaseQuery<>(this, Hideouts.class).getAll(this);
 
+        BroadcastReceiver Receiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction() == Constants.TransitionEntered) {
+                    mProgressDialog.dismiss();
+                    //init barcode
+                    IntentIntegrator intentIntegrator = new IntentIntegrator(GeoMain.this);
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                    intentIntegrator.setPrompt("Ask a bartender for the barcode!");
+                    intentIntegrator.setCameraId(-1);
+                    intentIntegrator.setBeepEnabled(true);
+                    intentIntegrator.setBarcodeImageEnabled(false);
+                    intentIntegrator.initiateScan();
+                }
+            }
+        };
+
         LocalBroadcastManager.getInstance(this).registerReceiver(Receiver, new IntentFilter(Constants.TransitionEntered));
 
     }
-
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        // Called when the connection with the service is established
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // Because we have bound to an explicit
-            // service that is running in our own process, we can
-            // cast its IBinder to a concrete class and directly access it.
-            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-            mService.setCallBack(GeoMain.this);
-
-        }
-
-        // Called when the connection with the service disconnects unexpectedly
-        public void onServiceDisconnected(ComponentName className) {
-            Log.e("Ex_Binding", "onServiceDisconnected");
-            mBound = false;
-        }
-    };
-
 
     @Override
     public void CurrentLocation(LatLng latLng) {
@@ -312,53 +332,56 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
      * the user's location.
      */
     public void populateGeofenceList(List<Object> objects) {
-        if (objects.size() > 0) {
-            if (mGoogleApiClient.isConnected()) {
-                for (Object hideout : objects) {
+        if (objects.size() > 0 && mGoogleApiClient.isConnected()) {
 
-                    mGeofenceList.add(new Geofence.Builder()
-                            // Set the request ID of the geofence. This is a string to identify this
-                            // geofence.
-                            .setRequestId(((Hideouts) hideout).getRequestId())
+            for (Object hideout : objects) {
 
-                            // Set the circular region of this geofence.
-                            .setCircularRegion(
-                                    ((Hideouts) hideout).getLatitude(),
-                                    ((Hideouts) hideout).getLongitude(),
-                                    Constants.GEOFENCE_RADIUS_IN_METERS
-                            )
+                mGeofenceList.add(new Geofence.Builder()
+                        // Set the request ID of the geofence. This is a string to identify this
+                        // geofence.
+                        .setRequestId(((Hideouts) hideout).getRequestId())
 
-                            // Set the expiration duration of the geofence. This geofence gets automatically
-                            // removed after this period of time.
-                            .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                        // Set the circular region of this geofence.
+                        .setCircularRegion(
+                                ((Hideouts) hideout).getLatitude(),
+                                ((Hideouts) hideout).getLongitude(),
+                                Constants.GEOFENCE_RADIUS_IN_METERS
+                        )
 
-                            // Set the transition types of interest. Alerts are only generated for these
-                            // transition. We track entry and exit transitions in this sample.
-                            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                                    Geofence.GEOFENCE_TRANSITION_EXIT)
+                        // Set the expiration duration of the geofence. This geofence gets automatically
+                        // removed after this period of time.
+                        .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
 
-                            // Create the geofence.
-                            .build());
-                }
+                        // Set the transition types of interest. Alerts are only generated for these
+                        // transition. We track entry and exit transitions in this sample.
+                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                                Geofence.GEOFENCE_TRANSITION_EXIT)
+
+                        // Create the geofence.
+                        .build());
             }
         }
     }
 
-
-    public BroadcastReceiver Receiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction() == Constants.TransitionEntered) {
-                mProgressDialog.dismiss();
-                //TODO:scan barcode
-                finishActivity(Constants.IN_GEOFENCE);
-                Log.d("test", "test");
+    // Get the barcode results:
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
             }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
-    };
+    }
 
 }
+
+
+
 
 
 

@@ -1,9 +1,11 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.Models;
+
+import com.example.craftbeermob.Interfaces.IObject;
 
 /**
  * Created by ret on 6/3/16.
  */
-public class Missions implements  IObject{
+public class Missions implements IObject {
 
 
     @com.google.gson.annotations.SerializedName("id")

@@ -1,4 +1,4 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.LocationClasses;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -10,6 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.example.craftbeermob.Interfaces.IList;
+import com.example.craftbeermob.Interfaces.ILocationAware;
+import com.example.craftbeermob.JavaClasses.BaseQuery;
+import com.example.craftbeermob.JavaClasses.Constants;
+import com.example.craftbeermob.Models.Hideouts;
+import com.example.craftbeermob.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,36 +29,12 @@ import java.util.List;
 
 public class HideoutMapsActivity extends AppCompatActivity implements OnMapReadyCallback, ILocationAware, IList {
 
-    private GoogleMap mMap;
     boolean mBound;
     LocationService mService;
     LatLng currentLocation;
     GoogleApiClient mGoogleApiClient;
     ArrayList<Hideouts> mHideouts;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.mapstoolbar);
-        toolbar.setTitle("Choose a hideout");
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_reply_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
-        Intent intent = new Intent(this, LocationService.class);
-        bindService(intent, mConnection, this.BIND_AUTO_CREATE);
-
-    }
-
-
+    private GoogleMap mMap;
     private ServiceConnection mConnection = new ServiceConnection() {
 
         // Called when the connection with the service is established
@@ -72,6 +54,27 @@ public class HideoutMapsActivity extends AppCompatActivity implements OnMapReady
         }
     };
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.mapstoolbar);
+        toolbar.setTitle("Choose a hideout");
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_reply_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+        Intent intent = new Intent(this, LocationService.class);
+        bindService(intent, mConnection, BIND_AUTO_CREATE);
+
+    }
 
     /**
      * Manipulates the map once available.

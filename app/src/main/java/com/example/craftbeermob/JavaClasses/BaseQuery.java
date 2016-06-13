@@ -1,10 +1,12 @@
-package com.example.craftbeermob;
+package com.example.craftbeermob.JavaClasses;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.craftbeermob.Interfaces.IList;
+import com.example.craftbeermob.Interfaces.IObject;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
@@ -32,7 +34,7 @@ public class BaseQuery<T> {
 
 
     //params:context, and the class type we are going to query for
-    BaseQuery(Context con, Class classType) {
+    public BaseQuery(Context con, Class classType) {
         // Mobile Service URL and key
         try {
 
