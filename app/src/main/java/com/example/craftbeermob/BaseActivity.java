@@ -137,6 +137,7 @@ public class BaseActivity extends AppCompatActivity {
                 transaction.replace(R.id.content_frame, new LeaderboardFragment()).commit();
                 break;
             case 3:
+                startActivity(new Intent(this,SettingsActivity.class));
                 break;
             case 4:
                 break;

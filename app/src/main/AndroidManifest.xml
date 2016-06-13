@@ -41,8 +41,11 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity android:name=".HomePage">
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomePage"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -66,13 +69,16 @@
 
         <activity
             android:name=".HideoutMapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".Geo"
-            android:label="GEOFENCE" />
+            android:name=".GeoMain"
+            android:label="GEOFENCE"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".LocationService"
@@ -81,6 +87,11 @@
 
         <service android:name=".GeofenceTransitionsIntentService" />
 
+        <receiver android:name=".GeoMain$Receiver">
+            <intent-filter>
+                <action android:name="TransitionEntered"></action>
+            </intent-filter>
+        </receiver>
 
     </application>
 

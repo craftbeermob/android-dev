@@ -6,7 +6,6 @@ import android.location.Location;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -37,6 +36,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
+
+
+
     }
 
     @Override
@@ -67,8 +69,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onDestroy() {
         super.onDestroy();
-       LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        if(mGoogleApiClient.isConnected()){
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
     }
+
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -98,12 +104,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Log.d("Googleconnectionfailed", Integer.toString(i));
     }
 
-    PreferenceManager.OnActivityStopListener onActivityStopListener = new PreferenceManager.OnActivityStopListener() {
-        @Override
-        public void onActivityStop() {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, LocationService.this);
-        }
-    };
+
 
     @Override
     public void onLocationChanged(Location location) {

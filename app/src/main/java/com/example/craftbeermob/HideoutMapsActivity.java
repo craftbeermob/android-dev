@@ -28,6 +28,7 @@ public class HideoutMapsActivity extends AppCompatActivity implements OnMapReady
     LocationService mService;
     LatLng currentLocation;
     GoogleApiClient mGoogleApiClient;
+    ArrayList<Hideouts> mHideouts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class HideoutMapsActivity extends AppCompatActivity implements OnMapReady
 
         Intent intent = new Intent(this, LocationService.class);
         bindService(intent, mConnection, this.BIND_AUTO_CREATE);
+
     }
 
 
@@ -83,12 +85,13 @@ public class HideoutMapsActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        for (Hideouts hideout : App.getHideouts()) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(hideout.getLatitude(), hideout.getLongitude())).title(hideout.getRequestId()));
+        if (mHideouts.size() > 0) {
+            for (Hideouts hideout : mHideouts) {
+                mMap.addMarker(new MarkerOptions().position(new LatLng(hideout.getLatitude(), hideout.getLongitude())).title(hideout.getRequestId()));
+            }
         }
 
-       mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(Constants.MAP_ZOOM_LEVEL));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
     }
 
@@ -97,10 +100,10 @@ public class HideoutMapsActivity extends AppCompatActivity implements OnMapReady
     }
 
     public void onStop() {
-        mService.unbindService(mConnection);
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
 
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+          //  stopService(new Intent(this,LocationService.class));
         }
         super.onStop();
     }
@@ -118,12 +121,13 @@ public class HideoutMapsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public void setList(List<Object> objects) {
-        ArrayList<Hideouts> temp = new ArrayList<>();
+        mHideouts = new ArrayList<>();
         for (Object obj : objects) {
-            temp.add((Hideouts) obj);
+            mHideouts.add((Hideouts) obj);
         }
-        App.setHideoutList(temp);
         setupMap();
+
+
     }
 
     private void setupMap() {

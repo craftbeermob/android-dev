@@ -62,8 +62,7 @@ public class HomePageFragment extends Fragment implements IList {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         //get all listitems which gets called back to setList
         //params:context, table to query
-        BaseQuery query = new BaseQuery(getContext(), Missions.class);
-        query.getAll(this);
+        new BaseQuery(getContext(), Missions.class).getAll(this);;
         mAdapter = new MissionsRecyclerAdapter(null);
         mRecyclerView.setAdapter(mAdapter);
         return view;
