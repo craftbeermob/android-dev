@@ -14,17 +14,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.example.craftbeermob.Classes.StoreBlob;
 import com.example.craftbeermob.Fragments.SummaryFragment;
 import com.example.craftbeermob.Interfaces.IListFragmentInteractionListener;
 import com.example.craftbeermob.LocationClasses.GeoMain;
-import com.example.craftbeermob.Models.RecentActivity;
 import com.example.craftbeermob.R;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 public class SummaryActivity extends BaseActivity implements IListFragmentInteractionListener {
 
@@ -127,10 +124,9 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
                 if ((photo = (Bitmap) data.getExtras().get("data")) != null) {
                     // Image captured and saved to fileUri specified in the Intent
                     //TODO: after image is taken ask the user what type of beer it was and pass it to recentactivity
-                    //save image to blob
-                    StoreBlob storeBlob = new StoreBlob(this, new RecentActivity(UUID.randomUUID().toString()), photo);
-                    storeBlob.execute();
-                    // startActivityForResult(new Intent(this,GeoMain.class),GeoMain.GeoMain_RequestCode);
+                    Intent intent = new Intent(this, GeoMain.class);
+                    intent.putExtra("userphoto", photo);
+                    startActivityForResult(intent, GeoMain.GeoMain_RequestCode);
 
 
                 } else if (resultCode == RESULT_CANCELED) {

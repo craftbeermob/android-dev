@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -20,9 +21,11 @@ import android.widget.Toast;
 import com.example.craftbeermob.Classes.BaseQuery;
 import com.example.craftbeermob.Classes.Constants;
 import com.example.craftbeermob.Classes.GeofenceErrorMessages;
+import com.example.craftbeermob.Classes.StoreBlob;
 import com.example.craftbeermob.Interfaces.IList;
 import com.example.craftbeermob.Interfaces.ILocationAware;
 import com.example.craftbeermob.Models.Hideouts;
+import com.example.craftbeermob.Models.RecentActivity;
 import com.example.craftbeermob.R;
 import com.example.craftbeermob.Services.GeofenceTransitionsIntentService;
 import com.google.android.gms.common.ConnectionResult;
@@ -38,6 +41,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by ret70 on 6/10/2016.
@@ -45,7 +49,6 @@ import java.util.List;
 public class GeoMain extends Activity implements ResultCallback<Status>, ILocationAware,
         IList, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-
 
     protected static final String TAG = "GeoMain";
     public static int GeoMain_RequestCode = 101;
@@ -58,6 +61,7 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
      * The list of geofences used in this sample.
      */
     protected ArrayList<Geofence> mGeofenceList;
+    Bitmap mUserPhoto;
     boolean mBound;
     LocationService mService;
     private ArrayList<Object> HideoutObjects;
@@ -106,6 +110,8 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
             finish();
         }
 
+        Intent photoIntent = getIntent();
+        Bitmap mUserrPhoto = photoIntent.getParcelableExtra("userphoto");
 
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Obtaining Location...");
@@ -391,8 +397,9 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
                 finish();
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
-
-
+                //save image to blob
+                StoreBlob storeBlob = new StoreBlob(this, new RecentActivity(UUID.randomUUID().toString()), mUserPhoto);
+                storeBlob.execute();
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
             }
         } else {
