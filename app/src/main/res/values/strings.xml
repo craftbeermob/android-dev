@@ -23,7 +23,6 @@
     </string>
 
 
-
     <!-- Buttons strings -->
     <string name="add_geofences">Add geofences</string>
     <string name="remove_geofences">Remove geofences</string>
@@ -52,26 +51,41 @@
 
     <string name="geofence_transition_notification_text">Click notification to return to app</string>
 
-
-
-
+    <string name="prompt_favhideout">Favorite Hideout</string>
+    <string name="prompt_favbrewer">Favorite Brewer</string>
+    <string name="prompt_favbeertype">Favorite Beer Type</string>
 
     <string name="colorPrimary"></string>
 
-    <string-array name="array_name">
+    <string-array name="missionstatus">
         <item>Active</item>
         <item>Completed</item>
         <item>Inactive</item>
     </string-array>
 
 
+
     <string-array name="homePageNavStrings">
+        <item>Summary</item>
         <item>Profile</item>
         <item>Hideouts</item>
         <item>Leaderboard</item>
         <item>Settings</item>
         <item>Logout</item>
     </string-array>
+
+
+    <string-array name="array_spinner_favoritehideout">
+        <item>Favorite Hideout</item>
+    </string-array>
+
+    <string-array name="array_spinner_favoritebrewer">
+        <item>Favorite Brewer</item>
+    </string-array>
+    <string-array name="array_spinner_favoritebeer">
+        <item>Favorite Beer</item>
+    </string-array>
+
     <string name="title_activity_hideouts_map">Map</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_settings">Settings</string>

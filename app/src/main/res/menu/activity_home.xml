@@ -2,9 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/menu_uploadbeer"
+        android:icon="@drawable/beer"
         android:orderInCategory="101"
-        app:showAsAction="always"
         android:title="@string/menu_picture"
-        android:icon="@drawable/beer"></item>
+        app:showAsAction="always"></item>
+
 
 </menu>

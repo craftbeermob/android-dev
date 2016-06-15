@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="100">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="20"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_summary_userimage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/ic_camera_alt_black_24dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_summer_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:hint="Jace" />
+
+            <TextView
+                android:id="@+id/tv_summary_totalpoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:hint="Total Points" />
+
+            <TextView
+                android:id="@+id/tv_summary_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:hint="2500" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="30"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/spinner_favhideout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/array_spinner_favoritehideout"
+            android:prompt="@string/prompt_favhideout" />
+
+        <Spinner
+            android:id="@+id/spinner_summary_favbrewer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/array_spinner_favoritebrewer"
+            android:prompt="@string/prompt_favbrewer" />
+
+        <Spinner
+            android:id="@+id/spinner_summary_favbeertype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/array_spinner_favoritebeer"
+            android:prompt="@string/prompt_favbeertype" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="15"
+        android:text="Recent Activity"
+        android:textSize="30dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="35">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+</LinearLayout>

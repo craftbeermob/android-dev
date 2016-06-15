@@ -15,8 +15,9 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.example.craftbeermob.Fragments.HomePageFragment;
 import com.example.craftbeermob.Fragments.LeaderboardFragment;
+import com.example.craftbeermob.Fragments.ProfileFragment;
+import com.example.craftbeermob.Fragments.SummaryFragment;
 import com.example.craftbeermob.LocationClasses.HideoutMapsActivity;
 import com.example.craftbeermob.R;
 
@@ -45,13 +46,13 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layoutResID) {
         //region Drawer
-        mDrawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_home_page, null);
+        mDrawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_summary, null);
         FrameLayout activityContainer = (FrameLayout) mDrawerLayout.findViewById(R.id.content_frame);
         getLayoutInflater().inflate(layoutResID, activityContainer, false);
         mDrawerStrings = getResources().getStringArray(R.array.homePageNavStrings);
         mDrawerList = (ListView) mDrawerLayout.findViewById(R.id.nav_drawer);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.homepagedrawerlistitem, mDrawerStrings));
+                R.layout.drawerlistitem, mDrawerStrings));
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -119,20 +120,26 @@ public class BaseActivity extends AppCompatActivity {
             case 0:
                 manager = getSupportFragmentManager();
                 transaction = manager.beginTransaction();
-                transaction.replace(R.id.content_frame, new HomePageFragment()).commit();
+                transaction.replace(R.id.content_frame, new SummaryFragment()).commit();
                 break;
             case 1:
-                startActivity(new Intent(this, HideoutMapsActivity.class));
+                manager = getSupportFragmentManager();
+                transaction = manager.beginTransaction();
+                transaction.replace(R.id.content_frame, new ProfileFragment()).commit();
+
                 break;
             case 2:
+                startActivity(new Intent(this, HideoutMapsActivity.class));
+
+                break;
+            case 3:
                 manager = getSupportFragmentManager();
                 transaction = manager.beginTransaction();
                 transaction.replace(R.id.content_frame, new LeaderboardFragment()).commit();
-                break;
-            case 3:
-                startActivity(new Intent(this, SettingsActivity.class));
+
                 break;
             case 4:
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case 5:
                 break;

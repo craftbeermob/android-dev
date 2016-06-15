@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.craftbeermob.JavaClasses;
+package com.example.craftbeermob.Classes;
 
 import android.content.Context;
 import android.content.res.Resources;

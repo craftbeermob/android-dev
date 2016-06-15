@@ -1,4 +1,4 @@
-package com.example.craftbeermob.JavaClasses;
+package com.example.craftbeermob.Classes;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,11 +18,12 @@ import java.util.List;
 public class MissionsRecyclerAdapter extends RecyclerView.Adapter<MissionsRecyclerAdapter.ViewHolder> {
 
     ArrayList<Missions> mMissionTitles;
-    public MissionsRecyclerAdapter( ArrayList<Missions> missionTitles)
-    {
+
+    public MissionsRecyclerAdapter(ArrayList<Missions> missionTitles) {
 
 
     }
+
     @Override
     public MissionsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -38,36 +39,33 @@ public class MissionsRecyclerAdapter extends RecyclerView.Adapter<MissionsRecycl
 
     @Override
     public int getItemCount() {
-        if(mMissionTitles != null) {
+        if (mMissionTitles != null) {
             return mMissionTitles.size();
-        }else
-        {
-            mMissionTitles=new ArrayList<>();
-          return 0;
+        } else {
+            mMissionTitles = new ArrayList<>();
+            return 0;
         }
     }
 
-    public void addItems(List<Object> missionsList)
-    {
-        int prevSize=mMissionTitles.size();
+    public void addItems(List<Object> missionsList) {
+        int prevSize = mMissionTitles.size();
 
-        for (Object mission:missionsList) {
-           mMissionTitles.add((Missions)mission);
+        for (Object mission : missionsList) {
+            mMissionTitles.add((Missions) mission);
         }
 
-        notifyItemRangeInserted(prevSize,missionsList.size());
+        notifyItemRangeInserted(prevSize, missionsList.size());
 
     }
 
 
-    public  class ViewHolder extends RecyclerView.ViewHolder
-    {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tv_mission;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tv_mission=(TextView)itemView.findViewById(R.id.tv_missionrow_Title);
+            tv_mission = (TextView) itemView.findViewById(R.id.tv_missionrow_Title);
         }
     }
 }

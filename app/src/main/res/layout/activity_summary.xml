@@ -7,15 +7,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/toolBar"
-        layout="@layout/apptoolbar"></include>
+        <include
+            android:id="@+id/toolBar"
+            layout="@layout/apptoolbar"></include>
 
         <FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-           android:layout_below="@id/toolBar"></FrameLayout>
+            android:layout_below="@id/toolBar"></FrameLayout>
     </RelativeLayout>
 
     <ListView

@@ -25,7 +25,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:weightSum="100"
-                tools:context=".Activities.HomePage">
+                tools:context=".Activities.ProfileActivity">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -63,10 +63,10 @@
                                     android:id="@+id/homepage_Spinner_MissionStatus"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:entries="@array/array_name" />
+                                    android:entries="@array/missionstatus" />
 
                                 <android.support.v7.widget.RecyclerView
-                                    android:id="@+id/recyclerview_homepage"
+                                    android:id="@+id/recyclerview_profile"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 

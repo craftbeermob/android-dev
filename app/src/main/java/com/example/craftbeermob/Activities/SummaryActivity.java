@@ -14,16 +14,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.example.craftbeermob.Fragments.HomePageFragment;
+import com.example.craftbeermob.Classes.StoreBlob;
+import com.example.craftbeermob.Fragments.SummaryFragment;
 import com.example.craftbeermob.Interfaces.IListFragmentInteractionListener;
 import com.example.craftbeermob.LocationClasses.GeoMain;
+import com.example.craftbeermob.Models.RecentActivity;
 import com.example.craftbeermob.R;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
-public class HomePage extends BaseActivity implements IListFragmentInteractionListener {
+public class SummaryActivity extends BaseActivity implements IListFragmentInteractionListener {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
@@ -71,17 +74,20 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
+        setContentView(R.layout.activity_summary);
 
-        Fragment homePageFragment = new HomePageFragment();
+        Fragment summaryFragment = new SummaryFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, homePageFragment, null);
+        fragmentTransaction.replace(R.id.content_frame, summaryFragment, null);
         fragmentTransaction.commit();
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_home, menu);
 
-
-
-
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -89,14 +95,6 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.activity_home, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -105,11 +103,12 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
 
         if (item.getItemId() == R.id.menu_uploadbeer) {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-           // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+            // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
             //cameraIntent.putExtra("return-data", true);
-           // cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
-            startActivityForResult(cameraIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+            // cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
+            startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
+
         return super.onOptionsItemSelected(item);
 
 
@@ -127,10 +126,11 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
             if (resultCode == RESULT_OK) {
                 if ((photo = (Bitmap) data.getExtras().get("data")) != null) {
                     // Image captured and saved to fileUri specified in the Intent
-
-                    startActivityForResult(new Intent(this,GeoMain.class),GeoMain.GeoMain_RequestCode);
-                    App app = new App();
-                    app.setBeerPhoto(photo);
+                    //TODO: after image is taken ask the user what type of beer it was and pass it to recentactivity
+                    //save image to blob
+                    StoreBlob storeBlob = new StoreBlob(this, new RecentActivity(UUID.randomUUID().toString()), photo);
+                    storeBlob.execute();
+                    // startActivityForResult(new Intent(this,GeoMain.class),GeoMain.GeoMain_RequestCode);
 
 
                 } else if (resultCode == RESULT_CANCELED) {
@@ -139,13 +139,12 @@ public class HomePage extends BaseActivity implements IListFragmentInteractionLi
                     // Image capture failed, advise user
                 }
             }
-        }
-        else if(requestCode==GeoMain.GeoMain_RequestCode){
-            if(resultCode==RESULT_OK)
-            {
+        } else if (requestCode == GeoMain.GeoMain_RequestCode) {
+            if (resultCode == RESULT_OK) {
 
             }
         }
     }
+
 
 }

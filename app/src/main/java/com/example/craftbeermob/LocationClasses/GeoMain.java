@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -16,11 +17,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.craftbeermob.Classes.BaseQuery;
+import com.example.craftbeermob.Classes.Constants;
+import com.example.craftbeermob.Classes.GeofenceErrorMessages;
 import com.example.craftbeermob.Interfaces.IList;
 import com.example.craftbeermob.Interfaces.ILocationAware;
-import com.example.craftbeermob.JavaClasses.BaseQuery;
-import com.example.craftbeermob.JavaClasses.Constants;
-import com.example.craftbeermob.JavaClasses.GeofenceErrorMessages;
 import com.example.craftbeermob.Models.Hideouts;
 import com.example.craftbeermob.R;
 import com.example.craftbeermob.Services.GeofenceTransitionsIntentService;
@@ -99,6 +100,13 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geomain);
 
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Toast.makeText(this, "GPS disabled please check settings", Toast.LENGTH_LONG);
+            finish();
+        }
+
+
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Obtaining Location...");
         mProgressDialog.show();
@@ -152,21 +160,32 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
     public void ClientConnected(GoogleApiClient googleApiClient) {
 
         mGoogleApiClient = googleApiClient;
-        populateGeofenceList(HideoutObjects);
-        addGeofences();
+
         Log.i(TAG, "Connected to GoogleApiClient");
 
+        checkListset_ClientConnected();
+    }
+
+    private void checkListset_ClientConnected() {
+        if (mGoogleApiClient != null && HideoutObjects != null) {
+            if (HideoutObjects.size() > 0 && mGoogleApiClient.isConnected()) {
+                populateGeofenceList(HideoutObjects);
+                addGeofences();
+            }
+        }
     }
 
     //set hideout objects
     @Override
-    public void setList(List<Object> objects) {
+    public void setList(ArrayList<Object> objects) {
 
         HideoutObjects = new ArrayList<>();
         HideoutObjects.addAll(objects);
         if (HideoutObjects != null) {
             Log.d("test", HideoutObjects.toString());
         }
+
+        checkListset_ClientConnected();
 
     }
 
@@ -369,8 +388,11 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() == null) {
+                finish();
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
+
+
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
             }
         } else {

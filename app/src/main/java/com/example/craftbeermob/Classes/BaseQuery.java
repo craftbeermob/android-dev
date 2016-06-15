@@ -1,4 +1,4 @@
-package com.example.craftbeermob.JavaClasses;
+package com.example.craftbeermob.Classes;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -8,7 +8,9 @@ import android.util.Log;
 import com.example.craftbeermob.Interfaces.IList;
 import com.example.craftbeermob.Interfaces.IObject;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.ArrayList;
  */
 
 
-public class BaseQuery<T> {
+public class BaseQuery<T> implements TableOperationCallback {
 
     Context context;
     /**
@@ -41,8 +43,8 @@ public class BaseQuery<T> {
 
             mClient = new MobileServiceClient("https://craftbeermob.azurewebsites.net", con);
             // Get the Mobile Service Table instance to use
-
             mTable = mClient.getTable(classType);
+
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -53,6 +55,7 @@ public class BaseQuery<T> {
     /**
      * Add a new  mission item
      */
+
 
     public void addItem(final IObject item) {
         if (mClient == null) {
@@ -67,7 +70,6 @@ public class BaseQuery<T> {
 
                     mTable.insert(item.returnObj()).get();
 
-
                 } catch (final Exception e) {
                     Log.d("Ex_addItem", e.getMessage());
                 }
@@ -78,6 +80,35 @@ public class BaseQuery<T> {
         runAsyncTask(task);
     }
 
+
+    public void getWhere(final IList activity, final String field, final String fieldEquals) {
+        AsyncTask<Void, Void, ArrayList<Object>> task = new AsyncTask<Void, Void, ArrayList<Object>>() {
+            @Override
+            protected ArrayList<Object> doInBackground(Void... params) {
+                final ArrayList<Object> results;
+                try {
+                    results = mTable.where().field(field).eq(fieldEquals).execute().get();
+
+                } catch (Exception exception) {
+                    Log.d("getting  all objects", "Error");
+                    return null;
+                }
+                return results;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Object> objectList) {
+                super.onPostExecute(objectList);
+                if (objectList.size() > 0 && objectList != null) {
+                    activity.setList(objectList);
+                }
+
+            }
+        };
+        runAsyncTaskAllObjects(task);
+
+
+    }
 
     public void getAll(final IList activity) {
 
@@ -139,4 +170,8 @@ public class BaseQuery<T> {
         }
     }
 
+    @Override
+    public void onCompleted(Object entity, Exception exception, ServiceFilterResponse response) {
+        Log.d("test", "test");
+    }
 }

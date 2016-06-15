@@ -1,6 +1,6 @@
 package com.example.craftbeermob.Interfaces;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by ret on 6/5/16.
@@ -8,6 +8,6 @@ import java.util.List;
 public interface IList {
 
 
-    void setList(List<Object> objects);
+    void setList(ArrayList<Object> objects);
 
 }

@@ -10,10 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.example.craftbeermob.Classes.BaseQuery;
+import com.example.craftbeermob.Classes.Constants;
 import com.example.craftbeermob.Interfaces.IList;
 import com.example.craftbeermob.Interfaces.ILocationAware;
-import com.example.craftbeermob.JavaClasses.BaseQuery;
-import com.example.craftbeermob.JavaClasses.Constants;
 import com.example.craftbeermob.Models.Hideouts;
 import com.example.craftbeermob.R;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,7 +25,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HideoutMapsActivity extends AppCompatActivity implements OnMapReadyCallback, ILocationAware, IList {
 
@@ -123,7 +122,7 @@ public class HideoutMapsActivity extends AppCompatActivity implements OnMapReady
     }
 
     @Override
-    public void setList(List<Object> objects) {
+    public void setList(ArrayList<Object> objects) {
         mHideouts = new ArrayList<>();
         for (Object obj : objects) {
             mHideouts.add((Hideouts) obj);

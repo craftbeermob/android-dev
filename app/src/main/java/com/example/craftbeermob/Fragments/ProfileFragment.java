@@ -10,23 +10,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 
+import com.example.craftbeermob.Classes.BaseQuery;
+import com.example.craftbeermob.Classes.MissionsRecyclerAdapter;
 import com.example.craftbeermob.Interfaces.IList;
-import com.example.craftbeermob.JavaClasses.BaseQuery;
-import com.example.craftbeermob.JavaClasses.MissionsRecyclerAdapter;
 import com.example.craftbeermob.Models.Missions;
 import com.example.craftbeermob.R;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by ret70 on 6/9/2016.
  */
-public class HomePageFragment extends Fragment implements IList {
+public class ProfileFragment extends Fragment implements IList {
     private RecyclerView mRecyclerView;
     private MissionsRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    public HomePageFragment() {
+    public ProfileFragment() {
 
     }
 
@@ -40,7 +40,7 @@ public class HomePageFragment extends Fragment implements IList {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_homepage_row, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
         //region /* setup tabs */
         TabHost tabHost = (TabHost) view.findViewById(R.id.tabHost);
         tabHost.setup();
@@ -64,7 +64,7 @@ public class HomePageFragment extends Fragment implements IList {
         //endregion
 
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_homepage);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_profile);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         //get all listitems which gets called back to setList
         //params:context, table to query
@@ -76,7 +76,7 @@ public class HomePageFragment extends Fragment implements IList {
 
     //callback to set the reyclerview
     @Override
-    public void setList(List<Object> objects) {
+    public void setList(ArrayList<Object> objects) {
         try {
             if (objects.size() > 0) {
                 mAdapter.addItems(objects);

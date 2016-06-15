@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.craftbeermob.Classes.MyLeaderboardRecyclerAdapter;
 import com.example.craftbeermob.Interfaces.IListFragmentInteractionListener;
-import com.example.craftbeermob.JavaClasses.MyLeaderboardRecyclerViewAdapter;
 import com.example.craftbeermob.Models.Leaderboard;
 import com.example.craftbeermob.R;
 
@@ -88,7 +88,7 @@ public class LeaderboardFragment extends Fragment {
             leaderboardList.add(leaderboard4);
             leaderboardList.add(leaderboard5);
 
-            recyclerView.setAdapter(new MyLeaderboardRecyclerViewAdapter(leaderboardList, mListener));
+            recyclerView.setAdapter(new MyLeaderboardRecyclerAdapter(leaderboardList, mListener));
         }
         return view;
     }

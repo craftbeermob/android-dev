@@ -17,6 +17,9 @@ public class Leaderboard implements IObject {
     @com.google.gson.annotations.SerializedName("Points")
     private Integer Points;
 
+    @com.google.gson.annotations.SerializedName("id")
+    private Integer id;
+
     public String getUsername() {
         return Username;
     }

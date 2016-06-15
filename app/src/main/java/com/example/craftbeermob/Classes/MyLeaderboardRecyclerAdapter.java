@@ -1,4 +1,4 @@
-package com.example.craftbeermob.JavaClasses;
+package com.example.craftbeermob.Classes;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,20 +10,20 @@ import com.example.craftbeermob.Interfaces.IListFragmentInteractionListener;
 import com.example.craftbeermob.Models.Leaderboard;
 import com.example.craftbeermob.R;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the
  * specified {@link }.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyLeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<MyLeaderboardRecyclerViewAdapter.ViewHolder> {
+public class MyLeaderboardRecyclerAdapter extends RecyclerView.Adapter<MyLeaderboardRecyclerAdapter.ViewHolder> {
 
-    private final List<Leaderboard> mValues;
     private final IListFragmentInteractionListener mListener;
+    private ArrayList<Leaderboard> mLeaderboardList;
 
-    public MyLeaderboardRecyclerViewAdapter(List<Leaderboard> items, IListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyLeaderboardRecyclerAdapter(ArrayList<Leaderboard> items, IListFragmentInteractionListener listener) {
+        mLeaderboardList = items;
         mListener = listener;
     }
 
@@ -36,7 +36,7 @@ public class MyLeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<MyLea
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
+        holder.mItem = mLeaderboardList.get(position);
         holder.mUsernameView.setText(holder.mItem.getUsername());
         holder.mPointsView.setText(Integer.toString(holder.mItem.getPoints()));
 
@@ -54,7 +54,12 @@ public class MyLeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<MyLea
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        if (mLeaderboardList != null) {
+            return mLeaderboardList.size();
+        } else {
+            mLeaderboardList = new ArrayList<>();
+            return 0;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

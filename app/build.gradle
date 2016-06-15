@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.zumoappname"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -15,12 +15,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug {
-            testCoverageEnabled false
-        }
+
     }
 
     repositories {
+        mavenCentral()
         flatDir {
             dirs 'aars'
         }
@@ -46,4 +45,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:9.0.2'
     compile 'com.google.zxing:core:3.2.1'
     compile 'com.journeyapps:zxing-android-embedded:3.3.0@aar'
+    compile 'com.microsoft.azure.android:azure-storage-android:0.7.0@aar'
 }

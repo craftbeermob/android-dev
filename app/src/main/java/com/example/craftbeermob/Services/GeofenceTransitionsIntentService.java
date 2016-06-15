@@ -31,8 +31,8 @@ import android.support.v4.os.ResultReceiver;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.craftbeermob.JavaClasses.Constants;
-import com.example.craftbeermob.JavaClasses.GeofenceErrorMessages;
+import com.example.craftbeermob.Classes.Constants;
+import com.example.craftbeermob.Classes.GeofenceErrorMessages;
 import com.example.craftbeermob.LocationClasses.GeoMain;
 import com.example.craftbeermob.R;
 import com.google.android.gms.location.Geofence;

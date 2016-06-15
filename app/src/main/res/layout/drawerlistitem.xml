@@ -3,11 +3,11 @@
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+    android:background="?android:attr/activatedBackgroundIndicator"
     android:gravity="center_vertical"
+    android:hint="test"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:textColor="#fff"
-    android:hint="test"
-    android:background="?android:attr/activatedBackgroundIndicator"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
+    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+    android:textColor="#fff" />
