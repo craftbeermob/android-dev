@@ -23,7 +23,6 @@ import com.google.android.gms.location.Geofence;
  */
 public final class Constants {
 
-    public static final String PACKAGE_NAME = "com.google.android.gms.location.Geofence";
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = Geofence.NEVER_EXPIRE;
     public static final float GEOFENCE_RADIUS_IN_METERS = 0060; // 1 mile, 1.6 km
     public static int MAP_ZOOM_LEVEL = 12;

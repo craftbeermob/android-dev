@@ -13,20 +13,29 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.craftbeermob.Classes.StoreBlob;
 import com.example.craftbeermob.Fragments.SummaryFragment;
+import com.example.craftbeermob.Interfaces.IList;
 import com.example.craftbeermob.Interfaces.IListFragmentInteractionListener;
 import com.example.craftbeermob.LocationClasses.GeoMain;
+import com.example.craftbeermob.Models.Users;
 import com.example.craftbeermob.R;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
-public class SummaryActivity extends BaseActivity implements IListFragmentInteractionListener {
+public class SummaryActivity extends BaseActivity implements IListFragmentInteractionListener, IList {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    public static final int CAPTURE_PROFILE_IMAGE = 101;
+    private static final int CAPTURE_RECENT_ACTIVITY_PICTURE = 100;
 
     /**
      * Create a file Uri for saving an image or video
@@ -73,11 +82,14 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
 
+
         Fragment summaryFragment = new SummaryFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, summaryFragment, null);
         fragmentTransaction.commit();
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,7 +115,7 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
             // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
             //cameraIntent.putExtra("return-data", true);
             // cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
-            startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+            startActivityForResult(cameraIntent, CAPTURE_RECENT_ACTIVITY_PICTURE);
         }
 
         return super.onOptionsItemSelected(item);
@@ -119,18 +131,19 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bitmap photo;
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+        if (requestCode == CAPTURE_RECENT_ACTIVITY_PICTURE) {
             if (resultCode == RESULT_OK) {
                 if ((photo = (Bitmap) data.getExtras().get("data")) != null) {
                     // Image captured and saved to fileUri specified in the Intent
                     //TODO: after image is taken ask the user what type of beer it was and pass it to recentactivity
                     Intent intent = new Intent(this, GeoMain.class);
                     intent.putExtra("userphoto", photo);
+                    intent.putExtra("requestcode", CAPTURE_RECENT_ACTIVITY_PICTURE);
                     startActivityForResult(intent, GeoMain.GeoMain_RequestCode);
 
 
                 } else if (resultCode == RESULT_CANCELED) {
-                    // User cancelled the image capture
+                    // Users cancelled the image capture
                 } else {
                     // Image capture failed, advise user
                 }
@@ -139,8 +152,33 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
             if (resultCode == RESULT_OK) {
 
             }
+        } else if (requestCode == CAPTURE_PROFILE_IMAGE) {
+            if (resultCode == RESULT_OK) {
+                if ((photo = (Bitmap) data.getExtras().get("data")) != null) {
+                    Users users = new Users();
+                    users.setUserId("1234");
+                    users.setUsername("testuser");
+                    //TODO:Once we have authentication
+                    users.setProfilePictureId(UUID.randomUUID().toString());
+                    StoreBlob storeBlob = new StoreBlob(this, users, photo);
+                    storeBlob.execute();
+
+                }
+            }
         }
+
+
     }
 
 
+    public void setProfilePic(String uri) {
+        ImageView imageView = (ImageView) findViewById(R.id.iv_summary_userimage);
+        imageView.setBackgroundResource(0);
+        Glide.with(this).load(uri).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+    }
+
+    @Override
+    public void setList(ArrayList<Object> objects) {
+
+    }
 }

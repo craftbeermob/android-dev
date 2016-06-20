@@ -4,8 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.craftbeermob.Activities.SummaryActivity;
+import com.example.craftbeermob.Interfaces.HasPhoto;
+import com.example.craftbeermob.Models.Badges;
 import com.example.craftbeermob.Models.RecentActivity;
+import com.example.craftbeermob.Models.Users;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.BlobContainerPermissions;
@@ -26,33 +31,33 @@ import java.util.Arrays;
 /**
  * Created by ret70 on 6/14/2016.
  */
-public class StoreBlob extends AsyncTask<String, Void, Void> {
-    RecentActivity mRecentActivity;
+public class StoreBlob extends AsyncTask<Void, Void, Void> {
+    HasPhoto mModel;
     CloudBlobContainer mCloudBlobContainer;
     Context context;
-
     Bitmap mUserPhoto;
 
-    public StoreBlob(Context context, RecentActivity recentActivity, Bitmap userPhoto) {
-        mRecentActivity = recentActivity;
+    public StoreBlob(Context context, HasPhoto model, Bitmap userPhoto) {
+        mModel = model;
         this.context = context;
         this.mUserPhoto = userPhoto;
+
     }
 
-    @Override
-    protected Void doInBackground(String... params) {
 
+    @Override
+    protected Void doInBackground(Void... params) {
         try {
             //connect
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(Constants.connectionString);
             CloudBlobClient blobClient = cloudStorageAccount.createCloudBlobClient();
 
             //get reference to a container (which is just a place for each user to upload photos
-            mCloudBlobContainer = blobClient.getContainerReference(mRecentActivity.getUsername());
+            mCloudBlobContainer = blobClient.getContainerReference(mModel.getUserID());
             mCloudBlobContainer.createIfNotExists();
             //set permission to off so data cannot be accessed from outside
             BlobContainerPermissions blobContainerPermissions = new BlobContainerPermissions();
-            blobContainerPermissions.setPublicAccess(BlobContainerPublicAccessType.OFF);
+            blobContainerPermissions.setPublicAccess(BlobContainerPublicAccessType.BLOB);
             mCloudBlobContainer.uploadPermissions(blobContainerPermissions);
 
             //
@@ -98,13 +103,22 @@ public class StoreBlob extends AsyncTask<String, Void, Void> {
             byte[] fullBlobArray = bufferedOutputStream.toByteArray();
             InputStream fullInputStream = new ByteArrayInputStream(fullBlobArray);
             if (checkIfOver4Mb()) {
+                int prevIndex = 0;
                 for (int i = 0; i < fullBlobArray.length; i++) {
-                    if (i / 1024 == 0) {
+                    if ((i != 0) && (2048 / i == 0)) {
 
-                        byte[] splitBlobSize = Arrays.copyOfRange(fullBlobArray, 0, i + 1);
+                        byte[] splitBlobSize = Arrays.copyOfRange(fullBlobArray, prevIndex, i);
+                        prevIndex = i;
                         InputStream splitInputStream = new ByteArrayInputStream(splitBlobSize);
-                        UploadImage(splitInputStream, mRecentActivity.getPhotoId(), splitBlobSize.length);
+                        UploadImage(splitInputStream, mModel.getPhotoID(), splitBlobSize.length);
+
+                    } else if (i == fullBlobArray.length) {
+                        byte[] splitBlobSize = Arrays.copyOfRange(fullBlobArray, prevIndex, i);
+                        prevIndex = i;
+                        InputStream splitInputStream = new ByteArrayInputStream(splitBlobSize);
+                        UploadImage(splitInputStream, mModel.getPhotoID(), splitBlobSize.length);
                     }
+
                 }
 
             } else {
@@ -118,16 +132,59 @@ public class StoreBlob extends AsyncTask<String, Void, Void> {
 
     private void UploadImage(InputStream inputStream, long size) {
         CloudBlockBlob cloudBlockBlob = null;
+        String blob_reference;
         //upload data to the container
         try {
-            cloudBlockBlob = mCloudBlobContainer.getBlockBlobReference(mRecentActivity.getPhotoId());
+            cloudBlockBlob = mCloudBlobContainer.getBlockBlobReference(mModel.getPhotoID());
             cloudBlockBlob.upload(inputStream, size);
+            if (mModel instanceof RecentActivity) {
+                ((RecentActivity) mModel).setPhotoURI(cloudBlockBlob.getUri().toString());
+                ((RecentActivity) mModel).setBrewery_Info("Test Brewery!");
+                ((RecentActivity) mModel).setPhotoId(((RecentActivity) mModel).getPhotoId());
+                ((RecentActivity) mModel).setTitle("Super Brewery-Ale,Summer");
+                ((RecentActivity) mModel).setUsername(((RecentActivity) mModel).getUsername());
+                new BaseQuery<>(context, RecentActivity.class).addItem(((RecentActivity) mModel));
+
+            } else if (mModel instanceof Users) {
+                //TODO:Possibly delete older profile pics??
+
+                ((Users) mModel).setProfilePictureUri(cloudBlockBlob.getUri().toString());
+
+                ((SummaryActivity) context).runOnUiThread(new Runnable() {
+                    public void run() {
+                        ((SummaryActivity) context).setProfilePic(((Users) mModel).getProfilePictureUri());
+                    }
+                });
+                new BaseQuery<>(context, Users.class).updateItem(((Users) mModel));
+            } else if (mModel instanceof Users) {
+                //TODO:Possibly delete older profile pics??
+
+                ((Users) mModel).setProfilePictureUri(cloudBlockBlob.getUri().toString());
+
+                ((SummaryActivity) context).runOnUiThread(new Runnable() {
+                    public void run() {
+                        ((SummaryActivity) context).setProfilePic(((Users) mModel).getProfilePictureUri());
+                    }
+                });
+                new BaseQuery<>(context, Users.class).updateItem(((Users) mModel));
+            }
+            //for testing of uploading badges
+            else if (mModel instanceof Badges) {
+
+                ((Badges) mModel).setBadgeUri(cloudBlockBlob.getUri().toString());
+
+                new BaseQuery<>(context, Badges.class).addItem(((Badges) mModel));
+            }
+
 
         } catch (URISyntaxException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG);
             e.printStackTrace();
         } catch (StorageException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG);
             e.printStackTrace();
         } catch (IOException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG);
             e.printStackTrace();
         }
 
@@ -139,14 +196,17 @@ public class StoreBlob extends AsyncTask<String, Void, Void> {
         //upload data to the container
         try {
             cloudBlockBlob = mCloudBlobContainer.getBlockBlobReference(blockId);
-            cloudBlockBlob.uploadBlock(mRecentActivity.getPhotoId(), inputStream, size);
+            cloudBlockBlob.uploadBlock(mModel.getPhotoID(), inputStream, size);
 
 
         } catch (URISyntaxException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG);
             e.printStackTrace();
         } catch (StorageException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG);
             e.printStackTrace();
         } catch (IOException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG);
             e.printStackTrace();
         }
 

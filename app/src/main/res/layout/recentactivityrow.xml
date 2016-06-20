@@ -7,8 +7,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:clipToPadding="true">
+        android:layout_margin="5dp">
 
         <RelativeLayout
             android:id="@+id/rl_summary_container"
@@ -29,7 +28,7 @@
                 android:layout_toRightOf="@id/iv_summary_recentImage"
                 android:hint="Title"
                 android:textColor="@color/appBlack"
-                android:textSize="25sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_summary_date"
@@ -62,7 +61,7 @@
                 android:layout_height="2dp"
                 android:layout_below="@id/tv_summary_breweryinfo"
                 android:layout_toRightOf="@id/iv_summary_recentImage"
-                android:background="@color/appGrey">
+                android:background="@color/colorAccent">
 
             </View>
 

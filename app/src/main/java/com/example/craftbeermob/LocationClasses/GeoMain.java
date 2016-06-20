@@ -51,7 +51,7 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         GoogleApiClient.OnConnectionFailedListener {
 
     protected static final String TAG = "GeoMain";
-    public static int GeoMain_RequestCode = 101;
+    public static int GeoMain_RequestCode = 102;
     public ProgressDialog mProgressDialog;
     /**
      * Provides the entry point to Google Play services.
@@ -64,12 +64,28 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
     Bitmap mUserPhoto;
     boolean mBound;
     LocationService mService;
+    BroadcastReceiver Receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() == Constants.TransitionEntered) {
+                mProgressDialog.dismiss();
+                //init barcode
+                IntentIntegrator intentIntegrator = new IntentIntegrator(GeoMain.this);
+                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                intentIntegrator.setPrompt("Ask a bartender for the barcode!");
+                intentIntegrator.setCameraId(-1);
+                intentIntegrator.setBeepEnabled(true);
+                intentIntegrator.setBarcodeImageEnabled(false);
+                intentIntegrator.initiateScan();
+            }
+        }
+    };
     private ArrayList<Object> HideoutObjects;
     /**
      * Used to keep track of whether geofences were added.
      */
     private boolean mGeofencesAdded;
-
     /**
      * Used when requesting to add or remove geofences.
      */
@@ -111,7 +127,8 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         }
 
         Intent photoIntent = getIntent();
-        Bitmap mUserrPhoto = photoIntent.getParcelableExtra("userphoto");
+
+        mUserPhoto = photoIntent.getParcelableExtra("userphoto");
 
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Obtaining Location...");
@@ -131,23 +148,7 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
 
         new BaseQuery<>(this, Hideouts.class).getAll(this);
 
-        BroadcastReceiver Receiver = new BroadcastReceiver() {
 
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction() == Constants.TransitionEntered) {
-                    mProgressDialog.dismiss();
-                    //init barcode
-                    IntentIntegrator intentIntegrator = new IntentIntegrator(GeoMain.this);
-                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-                    intentIntegrator.setPrompt("Ask a bartender for the barcode!");
-                    intentIntegrator.setCameraId(-1);
-                    intentIntegrator.setBeepEnabled(true);
-                    intentIntegrator.setBarcodeImageEnabled(false);
-                    intentIntegrator.initiateScan();
-                }
-            }
-        };
 
         LocalBroadcastManager.getInstance(this).registerReceiver(Receiver, new IntentFilter(Constants.TransitionEntered));
 
@@ -195,7 +196,6 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -216,10 +216,6 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
     @Override
     public void onConnected(Bundle connectionHint) {
 
-        // Get the geofences used. Geofence data is hard coded in this sample.
-        populateGeofenceList(HideoutObjects);
-        addGeofences();
-        Log.i(TAG, "Connected to GoogleApiClient");
     }
 
     @Override
@@ -394,9 +390,10 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() == null) {
-                finish();
+                this.finish();
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
+                this.finish();
                 //save image to blob
                 StoreBlob storeBlob = new StoreBlob(this, new RecentActivity(UUID.randomUUID().toString()), mUserPhoto);
                 storeBlob.execute();

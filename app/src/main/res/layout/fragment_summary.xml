@@ -7,16 +7,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="20"
+        android:layout_height="0dp"
+        android:layout_weight="35"
         android:orientation="horizontal">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/iv_summary_userimage"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_margin="20dp"
-            android:background="@drawable/ic_camera_alt_black_24dp" />
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_camera_alt_black_24dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -50,8 +50,8 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="30"
+        android:layout_height="0dp"
+        android:layout_weight="15"
         android:orientation="vertical">
 
         <Spinner
@@ -78,16 +78,16 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="15"
+        android:layout_height="0dp"
+        android:layout_weight="10"
         android:text="Recent Activity"
-        android:textSize="30dp" />
+        android:textSize="20sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="35">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="40">
 
     </android.support.v7.widget.RecyclerView>
 

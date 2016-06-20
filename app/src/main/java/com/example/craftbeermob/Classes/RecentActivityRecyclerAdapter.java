@@ -1,5 +1,6 @@
 package com.example.craftbeermob.Classes;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.craftbeermob.Models.RecentActivity;
 import com.example.craftbeermob.R;
 
 import java.util.ArrayList;
@@ -16,10 +20,12 @@ import java.util.ArrayList;
  */
 public class RecentActivityRecyclerAdapter extends RecyclerView.Adapter<RecentActivityRecyclerAdapter.ViewHolder> {
 
-    ArrayList<GetBlob.RecentImageAndPhoto> mActivityArrayList;
+    ArrayList<RecentActivity> mActivityArrayList;
+    Context mContext;
 
-    public RecentActivityRecyclerAdapter(ArrayList<GetBlob.RecentImageAndPhoto> activityArrayList) {
+    public RecentActivityRecyclerAdapter(Context context, ArrayList<RecentActivity> activityArrayList) {
         mActivityArrayList = activityArrayList;
+        mContext = context;
     }
 
     @Override
@@ -32,17 +38,19 @@ public class RecentActivityRecyclerAdapter extends RecyclerView.Adapter<RecentAc
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.beerinfo.setText(mActivityArrayList.get(position).getRecentActivity().getBrewery_Info());
-        holder.date.setText(mActivityArrayList.get(position).getRecentActivity().getCreatedAt().toString());
-        holder.title.setText(mActivityArrayList.get(position).getRecentActivity().getTitle());
-        holder.beerPhoto.setImageBitmap(mActivityArrayList.get(position).getBitmap());
+        holder.beerinfo.setText(mActivityArrayList.get(position).getBrewery_Info());
+        holder.date.setText(mActivityArrayList.get(position).getCreatedAt().toString());
+        holder.title.setText(mActivityArrayList.get(position).getTitle());
+        Glide.with(mContext).load(mActivityArrayList.get(position)
+                .getPhotoURI()).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.beerPhoto);
+
     }
 
-    public void addItems(ArrayList<GetBlob.RecentImageAndPhoto> recentActivityArrayList) {
+    public void addItems(ArrayList<Object> recentActivityArrayList) {
         //TODO:Change for pagination
         int prevSize = mActivityArrayList.size();
-        for (GetBlob.RecentImageAndPhoto recentActivityAndImage : recentActivityArrayList) {
-            mActivityArrayList.add(recentActivityAndImage);
+        for (Object recentImage : recentActivityArrayList) {
+            mActivityArrayList.add((RecentActivity) recentImage);
         }
         notifyItemRangeInserted(prevSize, recentActivityArrayList.size());
     }

@@ -1,14 +1,14 @@
 package com.example.craftbeermob.Models;
 
+import com.example.craftbeermob.Interfaces.HasPhoto;
 import com.example.craftbeermob.Interfaces.IObject;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by ret70 on 6/14/2016.
  */
-public class RecentActivity implements IObject {
+public class RecentActivity implements IObject, HasPhoto {
 
     @com.google.gson.annotations.SerializedName("PhotoId")
     private
@@ -48,7 +48,7 @@ public class RecentActivity implements IObject {
         PhotoId = photoId;
         //TODO:change the user stuff once we actually implement it
         Username = "testuser";
-        UserId = UUID.randomUUID().toString();
+        UserId = "1234";
     }
 
     public RecentActivity returnObj() {
@@ -105,19 +105,14 @@ public class RecentActivity implements IObject {
         this.createdAt = createdAt;
     }
 
-    public String getUserId() {
-        return UserId;
+
+    @Override
+    public String getPhotoID() {
+        return getPhotoId();
     }
 
-    public void setUserId(String userId) {
-        UserId = userId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public String getUserID() {
+        return getUserID();
     }
 }

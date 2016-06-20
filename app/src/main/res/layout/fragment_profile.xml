@@ -66,9 +66,11 @@
                                     android:entries="@array/missionstatus" />
 
                                 <android.support.v7.widget.RecyclerView
-                                    android:id="@+id/recyclerview_profile"
+                                    android:id="@+id/recyclerview_profile_missions"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+                                    android:layout_height="match_parent">
+
+                                </android.support.v7.widget.RecyclerView>
 
                             </LinearLayout>
 
@@ -84,7 +86,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
-                                android:tag="BadgesTab"></LinearLayout>
+                                android:tag="BadgesTab">
+
+                                <android.support.v7.widget.RecyclerView
+                                    android:id="@+id/recyclerview_profile_badges"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
                         </FrameLayout>
                     </LinearLayout>
                 </TabHost>

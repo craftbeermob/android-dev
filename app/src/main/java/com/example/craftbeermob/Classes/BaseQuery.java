@@ -80,6 +80,30 @@ public class BaseQuery<T> implements TableOperationCallback {
         runAsyncTask(task);
     }
 
+    public void updateItem(final IObject item) {
+        if (mClient == null) {
+            return;
+        }
+
+
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+
+                    mTable.update(item.returnObj()).get();
+
+                } catch (final Exception e) {
+                    Log.d("Ex_addItem", e.getMessage());
+                }
+                return null;
+            }
+        };
+
+        runAsyncTask(task);
+    }
+
+
 
     public void getWhere(final IList activity, final String field, final String fieldEquals) {
         AsyncTask<Void, Void, ArrayList<Object>> task = new AsyncTask<Void, Void, ArrayList<Object>>() {
@@ -99,7 +123,7 @@ public class BaseQuery<T> implements TableOperationCallback {
             @Override
             protected void onPostExecute(ArrayList<Object> objectList) {
                 super.onPostExecute(objectList);
-                if (objectList.size() > 0 && objectList != null) {
+                if (objectList != null && objectList.size() > 0) {
                     activity.setList(objectList);
                 }
 
@@ -107,8 +131,8 @@ public class BaseQuery<T> implements TableOperationCallback {
         };
         runAsyncTaskAllObjects(task);
 
-
     }
+
 
     public void getAll(final IList activity) {
 
