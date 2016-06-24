@@ -82,7 +82,9 @@ public class ProfileFragment extends Fragment implements IList {
                 } else if (tabId == TabHeader.Test.name()) {
 
                 } else if (tabId == TabHeader.Badges.name()) {
+
                     new BaseQuery<>(getContext(), Badges.class).getWhere(ProfileFragment.this, "UserId", "1234");
+
                 }
 
             }
@@ -103,16 +105,18 @@ public class ProfileFragment extends Fragment implements IList {
     //callback to set the reyclerview
     @Override
     public void setList(ArrayList<Object> objects) {
-        try {
-            if (objects.get(0) instanceof Missions) {
-                if (objects.size() > 0) {
-                    mMissionAdapter.addItems(objects);
+        if (objects != null && objects.size() > 0) {
+            try {
+                if (objects.get(0) instanceof Missions) {
+                    if (objects.size() > 0) {
+                        mMissionAdapter.addItems(objects);
+                    }
+                } else if (objects.get(0) instanceof Badges) {
+                    mBadgesAdapter.addItem(objects);
                 }
-            } else if (objects.get(0) instanceof Badges) {
-                mBadgesAdapter.addItem(objects);
-            }
-        } catch (Exception ex) {
+            } catch (Exception ex) {
 
+            }
         }
     }
 

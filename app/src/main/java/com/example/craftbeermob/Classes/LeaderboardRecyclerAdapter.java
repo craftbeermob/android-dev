@@ -11,18 +11,19 @@ import com.example.craftbeermob.Models.Leaderboard;
 import com.example.craftbeermob.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the
  * specified {@link }.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyLeaderboardRecyclerAdapter extends RecyclerView.Adapter<MyLeaderboardRecyclerAdapter.ViewHolder> {
+public class LeaderboardRecyclerAdapter extends RecyclerView.Adapter<LeaderboardRecyclerAdapter.ViewHolder> {
 
     private final IListFragmentInteractionListener mListener;
     private ArrayList<Leaderboard> mLeaderboardList;
 
-    public MyLeaderboardRecyclerAdapter(ArrayList<Leaderboard> items, IListFragmentInteractionListener listener) {
+    public LeaderboardRecyclerAdapter(ArrayList<Leaderboard> items, IListFragmentInteractionListener listener) {
         mLeaderboardList = items;
         mListener = listener;
     }
@@ -50,6 +51,18 @@ public class MyLeaderboardRecyclerAdapter extends RecyclerView.Adapter<MyLeaderb
 //                }
 //            }
 //        });
+    }
+
+
+    public void addItems(List<Object> leaderboardList) {
+        int prevSize = mLeaderboardList.size();
+
+        for (Object mission : leaderboardList) {
+            mLeaderboardList.add((Leaderboard) mission);
+        }
+
+        notifyItemRangeInserted(prevSize, leaderboardList.size());
+
     }
 
     @Override

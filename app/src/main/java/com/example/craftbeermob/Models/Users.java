@@ -8,6 +8,7 @@ import com.example.craftbeermob.Interfaces.IObject;
  */
 public class Users implements IObject, HasPhoto {
     @com.google.gson.annotations.SerializedName("id")
+    private
     String id;
     @com.google.gson.annotations.SerializedName("Username")
     private String Username;
@@ -38,13 +39,7 @@ public class Users implements IObject, HasPhoto {
         Username = username;
     }
 
-    public String getUserId() {
-        return UserId;
-    }
 
-    public void setUserId(String userId) {
-        UserId = userId;
-    }
 
     public String getProfilePictureUri() {
         return ProfilePictureUri;
@@ -65,9 +60,15 @@ public class Users implements IObject, HasPhoto {
     }
 
     @Override
-    public String getUserID() {
-        return getUserId();
+    public String getUserId() {
+        return UserId;
     }
+
+
+    public void setUserId(String id) {
+        UserId = id;
+    }
+
 
     public String getProfilePictureId() {
         return ProfilePictureId;
@@ -91,5 +92,13 @@ public class Users implements IObject, HasPhoto {
 
     public void setPoints(String points) {
         Points = points;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

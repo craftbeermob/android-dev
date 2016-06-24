@@ -32,14 +32,6 @@ public class Badges implements IObject, HasPhoto {
         BadgeId = badgeId;
     }
 
-    public String getUserId() {
-        return UserId;
-    }
-
-    public void setUserId(String userId) {
-        UserId = userId;
-    }
-
     public String getBadgeUri() {
         return BadgeUri;
     }
@@ -54,7 +46,11 @@ public class Badges implements IObject, HasPhoto {
     }
 
     @Override
-    public String getUserID() {
-        return getUserId();
+    public String getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(String userId) {
+        UserId = userId;
     }
 }

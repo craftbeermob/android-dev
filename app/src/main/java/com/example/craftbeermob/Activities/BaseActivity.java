@@ -1,6 +1,8 @@
 package com.example.craftbeermob.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,11 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.example.craftbeermob.Classes.Constants;
 import com.example.craftbeermob.Fragments.LeaderboardFragment;
 import com.example.craftbeermob.Fragments.ProfileFragment;
 import com.example.craftbeermob.Fragments.SummaryFragment;
@@ -27,7 +31,6 @@ import com.example.craftbeermob.R;
 public class BaseActivity extends AppCompatActivity {
 
 
-    public FrameLayout frameLayout;
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
     String[] mDrawerStrings;
@@ -142,6 +145,21 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case 5:
+
+                SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHAREDPREFFILE, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.commit();
+
+                CookieManager cookieManager = CookieManager.getInstance();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    cookieManager.removeAllCookies(null);
+                } else {
+                    cookieManager.removeAllCookie();
+                }
+
+                App.getMobileClientSingleton(this).logout();
+                startActivity(new Intent(this, LoginActivity.class));
                 break;
 
             default:

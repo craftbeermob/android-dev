@@ -7,5 +7,8 @@ public interface HasPhoto {
 
     String getPhotoID();
 
-    String getUserID();
+    String getUserId();
+
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.craftbeermob.LocationClasses;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Binder;
@@ -23,10 +24,16 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private final IBinder mBinder = new LocalBinder();
     ILocationAware callbackClient;
     LocationRequest mLocationRequest;
+    Context context;
     private GoogleApiClient mGoogleApiClient;
 
 
     public LocationService() {
+
+    }
+
+    public LocationService(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -48,11 +55,14 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     protected synchronized void buildGoogleApiClient() {
+
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+
     }
 
     @Override

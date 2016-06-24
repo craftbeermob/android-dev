@@ -1,41 +1,53 @@
 package com.example.craftbeermob.Activities;
 
 import android.app.Application;
-import android.graphics.Bitmap;
+import android.content.Context;
 
-import com.example.craftbeermob.Models.Hideouts;
 import com.example.craftbeermob.Models.Users;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
-import java.util.ArrayList;
+import java.net.MalformedURLException;
 
 /**
  * Created by ret70 on 6/9/2016.
  */
 public class App extends Application {
-    private static ArrayList<Hideouts> hideoutList;
-    static private Users users;
-    final int GEOFENCE_RADIUS_IN_METERS = 100;
+
     //global class which holds objects through the lifecycle of the application
-    private Bitmap beerPhoto;
+    private static String profileUri;
 
-    public static Users getUsers() {
-        return users;
-    }
+    private static MobileServiceClient mobileServiceClient;
 
-    public static void setUsers(Users users) {
-        users = users;
-    }
+    private static Users user;
 
-    public Bitmap getBeerPhoto() {
-        return beerPhoto;
-    }
-
-    public void setBeerPhoto(Bitmap beerPhoto) {
-        if (beerPhoto != null) {
-            //release bitmap resources
-            beerPhoto.recycle();
-            this.beerPhoto = beerPhoto;
+    public static MobileServiceClient getMobileClientSingleton(Context con) {
+        if (mobileServiceClient == null) {
+            try {
+                return mobileServiceClient = new MobileServiceClient("https://craftbeermob.azurewebsites.net", con);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            mobileServiceClient.setContext(con);
+            return mobileServiceClient;
         }
 
+        return null;
+    }
+
+    public static Users GetUserSingleton() {
+        if (user == null) {
+            return user = new Users();
+        } else {
+            return user;
+        }
+    }
+
+    public static String getProfileUri() {
+        return profileUri;
+    }
+
+    public static void setProfileUri(String setProfileUri) {
+        profileUri = setProfileUri;
     }
 }

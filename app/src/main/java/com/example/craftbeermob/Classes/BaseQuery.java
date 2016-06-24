@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.craftbeermob.Activities.App;
 import com.example.craftbeermob.Interfaces.IList;
 import com.example.craftbeermob.Interfaces.IObject;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
@@ -12,7 +13,6 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 /**
@@ -38,17 +38,9 @@ public class BaseQuery<T> implements TableOperationCallback {
     //params:context, and the class type we are going to query for
     public BaseQuery(Context con, Class classType) {
         // Mobile Service URL and key
-        try {
-
-
-            mClient = new MobileServiceClient("https://craftbeermob.azurewebsites.net", con);
-            // Get the Mobile Service Table instance to use
-            mTable = mClient.getTable(classType);
-
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        mClient = App.getMobileClientSingleton(con);
+        // Get the Mobile Service Table instance to use
+        mTable = mClient.getTable(classType);
     }
 
 
@@ -80,11 +72,34 @@ public class BaseQuery<T> implements TableOperationCallback {
         runAsyncTask(task);
     }
 
-    public void updateItem(final IObject item) {
+    public void addAll(final ArrayList<IObject> items) {
         if (mClient == null) {
             return;
         }
 
+
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    for (IObject iObject : items) {
+                        mTable.insert(iObject.returnObj()).get();
+                    }
+
+                } catch (final Exception e) {
+                    Log.d("Ex_addItem", e.getMessage());
+                }
+                return null;
+            }
+        };
+
+        runAsyncTask(task);
+    }
+
+    public void updateItem(final IObject item) {
+        if (mClient == null) {
+            return;
+        }
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
@@ -102,7 +117,6 @@ public class BaseQuery<T> implements TableOperationCallback {
 
         runAsyncTask(task);
     }
-
 
 
     public void getWhere(final IList activity, final String field, final String fieldEquals) {
@@ -123,9 +137,8 @@ public class BaseQuery<T> implements TableOperationCallback {
             @Override
             protected void onPostExecute(ArrayList<Object> objectList) {
                 super.onPostExecute(objectList);
-                if (objectList != null && objectList.size() > 0) {
-                    activity.setList(objectList);
-                }
+                activity.setList(objectList);
+
 
             }
         };
@@ -154,7 +167,7 @@ public class BaseQuery<T> implements TableOperationCallback {
             @Override
             protected void onPostExecute(ArrayList<Object> objectList) {
                 super.onPostExecute(objectList);
-                if (objectList.size() > 0 && objectList != null) {
+                if (objectList != null && objectList.size() > 0) {
                     activity.setList(objectList);
                 }
 

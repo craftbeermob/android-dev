@@ -8,7 +8,7 @@
     <string name="checkbox_text">Item Text</string>
     <string name="menu">Menu</string>
     <string name="title_activity_login">Sign in</string>
-
+    <string name="facebook_app_id">303913433284222</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -63,6 +63,21 @@
         <item>Inactive</item>
     </string-array>
 
+    <string-array name="beertype">
+        <item>Type</item>
+        <item>Ale</item>
+        <item>Lager</item>
+        <item>Stout</item>
+        <item>Porter</item>
+        <item>Malt</item>
+    </string-array>
+
+    <string-array name="brewers">
+        <item>Brewer</item>
+        <item>Super Brewer</item>
+        <item>Budweiser</item>
+        <item>Corona</item>
+    </string-array>
 
 
     <string-array name="homePageNavStrings">

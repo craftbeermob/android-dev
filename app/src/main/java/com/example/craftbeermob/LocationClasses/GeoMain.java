@@ -1,8 +1,6 @@
 package com.example.craftbeermob.LocationClasses;
 
-import android.app.Activity;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,10 +12,12 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.craftbeermob.Activities.BeerPicker;
 import com.example.craftbeermob.Classes.BaseQuery;
 import com.example.craftbeermob.Classes.Constants;
 import com.example.craftbeermob.Classes.GeofenceErrorMessages;
@@ -41,18 +41,16 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by ret70 on 6/10/2016.
  */
-public class GeoMain extends Activity implements ResultCallback<Status>, ILocationAware,
+public class GeoMain extends FragmentActivity implements ResultCallback<Status>, ILocationAware,
         IList, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     protected static final String TAG = "GeoMain";
     public static int GeoMain_RequestCode = 102;
-    public ProgressDialog mProgressDialog;
     /**
      * Provides the entry point to Google Play services.
      */
@@ -62,22 +60,27 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
      */
     protected ArrayList<Geofence> mGeofenceList;
     Bitmap mUserPhoto;
-    boolean mBound;
+
     LocationService mService;
+    boolean isWithinHideout;
     BroadcastReceiver Receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == Constants.TransitionEntered) {
-                mProgressDialog.dismiss();
+                isWithinHideout = true;
+
                 //init barcode
-                IntentIntegrator intentIntegrator = new IntentIntegrator(GeoMain.this);
-                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-                intentIntegrator.setPrompt("Ask a bartender for the barcode!");
-                intentIntegrator.setCameraId(-1);
-                intentIntegrator.setBeepEnabled(true);
-                intentIntegrator.setBarcodeImageEnabled(false);
-                intentIntegrator.initiateScan();
+
+//                IntentIntegrator intentIntegrator = new IntentIntegrator(GeoMain.this);
+//                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+//                intentIntegrator.setPrompt("Ask a bartender for the barcode!");
+//                intentIntegrator.setCameraId(-1);
+//                intentIntegrator.setBeepEnabled(true);
+//                intentIntegrator.setBarcodeImageEnabled(false);
+//                intentIntegrator.initiateScan();
+
+
             }
         }
     };
@@ -99,7 +102,6 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
             // cast its IBinder to a concrete class and directly access it.
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
             mService = binder.getService();
-            mBound = true;
             mService.setCallBack(GeoMain.this);
 
         }
@@ -107,7 +109,6 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         // Called when the connection with the service disconnects unexpectedly
         public void onServiceDisconnected(ComponentName className) {
             Log.e("Ex_Binding", "onServiceDisconnected");
-            mBound = false;
         }
     };
 
@@ -123,18 +124,14 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Toast.makeText(this, "GPS disabled please check settings", Toast.LENGTH_LONG);
-            finish();
+            setResult(RESULT_CANCELED);
+            finishActivity(GeoMain_RequestCode);
         }
 
+        //get user photo
         Intent photoIntent = getIntent();
-
         mUserPhoto = photoIntent.getParcelableExtra("userphoto");
 
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage("Obtaining Location...");
-        mProgressDialog.show();
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setCanceledOnTouchOutside(false);
 
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<Geofence>();
@@ -142,15 +139,19 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         // Initially set the PendingIntent used in addGeofences() and removeGeofences() to null.
         mGeofencePendingIntent = null;
 
+        //bind to service
         Intent intent = new Intent(this, LocationService.class);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
 
-
+        //load hideouts
         new BaseQuery<>(this, Hideouts.class).getAll(this);
 
-
-
+        //register receiver
         LocalBroadcastManager.getInstance(this).registerReceiver(Receiver, new IntentFilter(Constants.TransitionEntered));
+        Intent beerPickerIntent = new Intent(this, BeerPicker.class);
+        beerPickerIntent.putExtra("beerphoto", mUserPhoto);
+
+        startActivityForResult(beerPickerIntent, BeerPicker.BEERPICKER_REQUEST_CODE);
 
     }
 
@@ -384,25 +385,48 @@ public class GeoMain extends Activity implements ResultCallback<Status>, ILocati
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        setResult(RESULT_CANCELED);
+        this.finishActivity(GeoMain_RequestCode);
+    }
+
+
     // Get the barcode results:
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                this.finish();
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-            } else {
-                this.finish();
-                //save image to blob
-                StoreBlob storeBlob = new StoreBlob(this, new RecentActivity(UUID.randomUUID().toString()), mUserPhoto);
+        switch (requestCode) {
+            case 1:
+                if (result != null) {
+                    if (result.getContents() == null) {
+                        this.finish();
+                        Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                    } else {
+                        this.finish();
+                        //save image to blob
+//                        StoreBlob storeBlob = new StoreBlob(this, new RecentActivity(UUID.randomUUID().toString()), mUserPhoto);
+//                        storeBlob.execute();
+                        Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    super.onActivityResult(requestCode, resultCode, data);
+                }
+                break;
+
+            case BeerPicker.BEERPICKER_REQUEST_CODE:
+                RecentActivity recentActivity = data.getParcelableExtra("recentactivity");
+                StoreBlob storeBlob = new StoreBlob(GeoMain.this, recentActivity, mUserPhoto);
                 storeBlob.execute();
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+                finish();
+                break;
+
         }
+
     }
+
 
 }
 

@@ -26,6 +26,10 @@ import com.example.craftbeermob.Models.Users;
 import com.example.craftbeermob.R;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,29 +41,23 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
     public static final int CAPTURE_PROFILE_IMAGE = 101;
     private static final int CAPTURE_RECENT_ACTIVITY_PICTURE = 100;
 
-    /**
-     * Create a file Uri for saving an image or video
-     */
-    private static Uri getOutputMediaFileUri(int type) {
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
 
     /**
      * Create a File for saving an image or video
      */
-    private static File getOutputMediaFile(int type) {
+    private File getOutputMediaFile(Bitmap photo) {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+                Environment.DIRECTORY_PICTURES), getResources().getString(R.string.app_name));
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d("MyCameraApp", "failed to create directory");
+                Log.d(getResources().getString(R.string.app_name), "failed to create directory");
                 return null;
             }
         }
@@ -67,11 +65,19 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_" + timeStamp + ".jpg");
-        } else {
-            return null;
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_" + timeStamp + ".jpg");
+
+        try {
+            OutputStream outputStream = new FileOutputStream(mediaFile);
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            MediaStore.Images.Media.insertImage(getContentResolver(), mediaFile.getAbsolutePath(), mediaFile.getName(), mediaFile.getName());
+            outputStream.flush();
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return mediaFile;
@@ -87,6 +93,18 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, summaryFragment, null);
         fragmentTransaction.commit();
+
+        ImageView imageView = (ImageView) findViewById(R.id.iv_summary_userimage);
+
+        if (App.GetUserSingleton().getProfilePictureUri() != null) {
+            imageView.setBackgroundResource(0);
+            Glide.with(this).load(
+                    App.GetUserSingleton()
+                            .getProfilePictureUri())
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+        }
 
     }
 
@@ -112,10 +130,9 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
 
         if (item.getItemId() == R.id.menu_uploadbeer) {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            // fileURI = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-            //cameraIntent.putExtra("return-data", true);
-            // cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,fileURI);
             startActivityForResult(cameraIntent, CAPTURE_RECENT_ACTIVITY_PICTURE);
+        } else if (item.getItemId() == R.id.menu_test) {
+            startActivity(new Intent(this, PlacesActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
@@ -134,11 +151,9 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
         if (requestCode == CAPTURE_RECENT_ACTIVITY_PICTURE) {
             if (resultCode == RESULT_OK) {
                 if ((photo = (Bitmap) data.getExtras().get("data")) != null) {
-                    // Image captured and saved to fileUri specified in the Intent
-                    //TODO: after image is taken ask the user what type of beer it was and pass it to recentactivity
+
                     Intent intent = new Intent(this, GeoMain.class);
                     intent.putExtra("userphoto", photo);
-                    intent.putExtra("requestcode", CAPTURE_RECENT_ACTIVITY_PICTURE);
                     startActivityForResult(intent, GeoMain.GeoMain_RequestCode);
 
 
@@ -150,15 +165,13 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
             }
         } else if (requestCode == GeoMain.GeoMain_RequestCode) {
             if (resultCode == RESULT_OK) {
-
+                startActivity(getIntent());
             }
         } else if (requestCode == CAPTURE_PROFILE_IMAGE) {
             if (resultCode == RESULT_OK) {
                 if ((photo = (Bitmap) data.getExtras().get("data")) != null) {
-                    Users users = new Users();
-                    users.setUserId("1234");
-                    users.setUsername("testuser");
                     //TODO:Once we have authentication
+                    Users users = App.GetUserSingleton();
                     users.setProfilePictureId(UUID.randomUUID().toString());
                     StoreBlob storeBlob = new StoreBlob(this, users, photo);
                     storeBlob.execute();
@@ -172,9 +185,16 @@ public class SummaryActivity extends BaseActivity implements IListFragmentIntera
 
 
     public void setProfilePic(String uri) {
+        SetProfilePicture(uri);
+        App.setProfileUri(uri);
+    }
+
+    private void SetProfilePicture(String uri) {
         ImageView imageView = (ImageView) findViewById(R.id.iv_summary_userimage);
-        imageView.setBackgroundResource(0);
-        Glide.with(this).load(uri).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+        if (imageView != null) {
+            imageView.setBackgroundResource(0);
+            Glide.with(this).load(uri).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+        }
     }
 
     @Override

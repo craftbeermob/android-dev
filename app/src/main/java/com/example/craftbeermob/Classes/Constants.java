@@ -24,11 +24,13 @@ import com.google.android.gms.location.Geofence;
 public final class Constants {
 
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = Geofence.NEVER_EXPIRE;
-    public static final float GEOFENCE_RADIUS_IN_METERS = 0060; // 1 mile, 1.6 km
+    public static final float GEOFENCE_RADIUS_IN_METERS = 3048; // 1 mile, 1.6 km
+    public static final String SHAREDPREFFILE = "temp";
     public static int MAP_ZOOM_LEVEL = 12;
     public static String TransitionEntered="TransitionEntered";
     public static String connectionString = "DefaultEndpointsProtocol=https;AccountName=craftbeermobstorage;AccountKey=fjwYLMgWPklgHyfuRQ6CjewykyQBKXC+L03GqageNBqCNAZD/kLDM97ZBcEdvqTzsPAPVdoud2sHpPqcs/DR5Q==";
-
+    public static String USERIDPREF = "uid";
+    public static String TOKENPREF = "tkn";
     private Constants() {
     }
 }

@@ -40,7 +40,7 @@ public class RecentActivityRecyclerAdapter extends RecyclerView.Adapter<RecentAc
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.beerinfo.setText(mActivityArrayList.get(position).getBrewery_Info());
         holder.date.setText(mActivityArrayList.get(position).getCreatedAt().toString());
-        holder.title.setText(mActivityArrayList.get(position).getTitle());
+        holder.title.setText(mActivityArrayList.get(position).getComment());
         Glide.with(mContext).load(mActivityArrayList.get(position)
                 .getPhotoURI()).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.beerPhoto);
 
@@ -73,7 +73,7 @@ public class RecentActivityRecyclerAdapter extends RecyclerView.Adapter<RecentAc
 
         public ViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.tv_summary_beertitle);
+            title = (TextView) itemView.findViewById(R.id.tv_summary_comment);
             beerinfo = (TextView) itemView.findViewById(R.id.tv_summary_breweryinfo);
             date = (TextView) itemView.findViewById(R.id.tv_summary_date);
             beerPhoto = (ImageView) itemView.findViewById(R.id.iv_summary_recentImage);
